@@ -62,7 +62,9 @@
     <!-- Load the stylesheet -->
     <!-- <link href="experiment.css" type="text/css" rel="stylesheet"></link> -->
     <link href="js/jspsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
-    <style>
+    <link href='https://fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic' rel='stylesheet' type='text/css'>
+<style>
 body {
   backgroud-color: black;
   color: white;
@@ -99,12 +101,52 @@ body {
    line-height: 400px;
    font-weight: 900;
 }
+h1 {
+   color: #ffffff;
+   font-family: 'Lato', sans-serif;
+   font-size: 54px;
+   font-weight: 300;
+   line-height: 58px;
+   margin: 0 0 58px;
+   border-bottom: double #555;
+   padding-bottom: 30px;
+}
+p {
+   color: #adb7bd;
+   font-family: 'Open Sans', Arial, sans-serif;
+   font-size: 16px;
+   line-height: 26px;
+   text-indent: 30px;
+   margin: 0;
+}
+
+a {
+   color: #fe921f;
+   text-decoration: underline;
+}
+
+a:hover { color: #ffffff }
+.date {
+      background: #fe921f;
+      color: #ffffff;
+      display: inline-block;
+      font-family: 'Lato', sans-serif;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 12px;
+      letter-spacing: 1px;
+      margin: 0 0 30px;
+      padding: 10px 15px 8px;
+      text-transform: uppercase;
+}
+
+.date2 { color: #bbc3c8; background: #292929; display: inline-block; font-family: 'Georgia', serif; font-style: italic; font-size: 18px; line-height: 22px; margin: 0 0 20px 18px; padding: 10px 12px 8px; position: absolute; bottom: -36px; }
     </style>
 
 
   </head>
 
-  <body bgcolor="black">
+  <body bgcolor="#292929">
     <div id="jspsych_target"></div>
   </body>
 
@@ -153,15 +195,16 @@ function exportToCsv(filename, rows) {
     }
 
     var test_stimuli = [
-    	{ stimulus: "<p class='RED'   >XXXXXXXX</p>",    is_html: true, data: { stimulus_type: "red" }, timing_response: 5000 },
-        { stimulus: "<p class='GREEN'   >XXXXXXXX</p>",  is_html: true, data: { stimulus_type: "green" }, timing_response: 5000 },	  
-        { stimulus: "<p class='BLUE'   >XXXXXXXX</p>",   is_html: true, data: { stimulus_type: "blue" }, timing_response: 5000 },	  
-        { stimulus: "<p class='YELLOW'   >XXXXXXXX</p>", is_html: true, data: { stimulus_type: "yellow" }, timing_response: 5000 } ];	  
+    	{ stimulus: "<p class='RED'   >XXXXXXXX</p>",    is_html: true, data: { stimulus_type: "red", correct_color: 'RED' }, timing_response: 5000 },
+        { stimulus: "<p class='GREEN'   >XXXXXXXX</p>",  is_html: true, data: { stimulus_type: "green", correct_color: 'GREEN' }, timing_response: 5000 },
+        { stimulus: "<p class='BLUE'   >XXXXXXXX</p>",   is_html: true, data: { stimulus_type: "blue", correct_color: 'BLUE' }, timing_response: 5000 },
+        { stimulus: "<p class='YELLOW'   >XXXXXXXX</p>", is_html: true, data: { stimulus_type: "yellow", correct_color: 'YELLOW' }, timing_response: 5000 } ];
 
-    var all_test_trials = jsPsych.randomization.repeat(test_stimuli, 10);
+    // training is long (20 is 20*4 stimulus presentations), test is short
+    var all_test_trials = jsPsych.randomization.repeat(test_stimuli, 5);
 
     // Experiment Instructions
-    var welcome_message = "<h1>ABCD's Stroop Test</h1>";
+    var welcome_message = "<div class='date'>Adolescent Brain Cognitive Development</div><div style='position: relative;'><h1>ABCD's Stroop Test</h1><div class='date2'>March 2016</div></div><p>Naming the color of a word printed in different inks poses a problem if the word itself denotes a color. The work \"<span style='color: lightgreen;'>red</span>\" written with green ink can be more easily read than its color can be named. This creates a reaction time delay that can be measured using the Stroop test. After an initial training phase this application will try to measure the delay between naming correctly or incorrectly colored words.</p><br/><p>Source code for this assessment has been created using jsPsych and can be viewed on <a href='https://github.com/ABCD-STUDY/stroop'>github</a>.</p>";
 
     var instructions = "<div id='instructions'><p>You will see a " +
 	"series of images that look similar to this:</p><p>" +
@@ -172,13 +215,16 @@ function exportToCsv(filename, rows) {
     var debrief = "<div id='instructions'><p>Thank you for " +
 	  "participating! Press enter to see the data.</p></div>";
 
+    var startreal = "<div id='instructions'><p>Now the same with words. " +
+	  "Press enter to see the data.</p></div>";
+
     var test_block = {
     	type: 'single-stim',
 	choices: ['b', 'y', 'r', 'g'],
 	timing_post_trial: post_trial_gap,
 	timeline: all_test_trials,
 	on_finish: function(data) {
-		jsPsych.data.addDataToLastTrial({is_test_element: true});
+		jsPsych.data.addDataToLastTrial({is_real_element: false});
 	    	var correct = false;
 	   	if(data.stimulus_type == 'red' && data.key_press == 82){
 	      		correct = true;
@@ -197,27 +243,80 @@ function exportToCsv(filename, rows) {
     timeline.push( { type: 'text', text: welcome_message } );
     timeline.push( { type: 'text', text: instructions } );
     timeline.push( test_block );
+    timeline.push( { type: 'text', text: startreal } );
+    
+    var real_stimuli = [
+	{ stimulus: "<p class='RED'   >RED</p>",    is_html: true, data: { stimulus_type: "congruent", correct_color: 'RED' }, timing_response: 5000 },
+	{ stimulus: "<p class='GREEN'   >GREEN</p>",  is_html: true, data: { stimulus_type: "congruent", correct_color: 'GREEN' }, timing_response: 5000 },
+	{ stimulus: "<p class='BLUE'   >BLUE</p>",   is_html: true, data: { stimulus_type: "congruent", correct_color: 'BLUE' }, timing_response: 5000 },
+	{ stimulus: "<p class='YELLOW'   >YELLOW</p>", is_html: true, data: { stimulus_type: "congruent", correct_color: 'YELLOW' }, timing_response: 5000 },
+
+	{ stimulus: "<p class='RED'   >RED</p>",    is_html: true, data: { stimulus_type: "congruent", correct_color: 'RED' }, timing_response: 5000 },
+	{ stimulus: "<p class='GREEN'   >GREEN</p>",  is_html: true, data: { stimulus_type: "congruent", correct_color: 'GREEN' }, timing_response: 5000 },
+	{ stimulus: "<p class='BLUE'   >BLUE</p>",   is_html: true, data: { stimulus_type: "congruent", correct_color: 'BLUE' }, timing_response: 5000 },
+	{ stimulus: "<p class='YELLOW'   >YELLOW</p>", is_html: true, data: { stimulus_type: "congruent", correct_color: 'YELLOW' }, timing_response: 5000 },
+
+	{ stimulus: "<p class='RED'   >RED</p>",    is_html: true, data: { stimulus_type: "congruent", correct_color: 'RED' }, timing_response: 5000 },
+	{ stimulus: "<p class='GREEN'   >GREEN</p>",  is_html: true, data: { stimulus_type: "congruent",correct_color: 'GREEN' }, timing_response: 5000 },
+	{ stimulus: "<p class='BLUE'   >BLUE</p>",   is_html: true, data: { stimulus_type: "congruent", correct_color: 'BLUE' }, timing_response: 5000 },
+	{ stimulus: "<p class='YELLOW'   >YELLOW</p>", is_html: true, data: { stimulus_type: "congruent", correct_color: 'YELLOW' }, timing_response: 5000 },
+
+	{ stimulus: "<p class='RED'   >GREEN</p>",    is_html: true, data: { stimulus_type: "incongruent", correct_color: 'RED' }, timing_response: 5000 },
+	{ stimulus: "<p class='BLUE'   >GREEN</p>",   is_html: true, data: { stimulus_type: "incongruent", correct_color: 'BLUE' }, timing_response: 5000 },
+	{ stimulus: "<p class='YELLOW'   >GREEN</p>", is_html: true, data: { stimulus_type: "incongruent", correct_color: 'YELLOW' }, timing_response: 5000 },
+
+	{ stimulus: "<p class='GREEN'  >RED</p>",    is_html: true, data: { stimulus_type: "incongruent", correct_color: 'GREEN' }, timing_response: 5000 },
+	{ stimulus: "<p class='BLUE'   >RED</p>",   is_html: true, data: { stimulus_type: "incongruent", correct_color: 'BLUE' }, timing_response: 5000 },
+	{ stimulus: "<p class='YELLOW'   >RED</p>", is_html: true, data: { stimulus_type: "incongruent", correct_color: 'YELLOW' }, timing_response: 5000 },
+
+	{ stimulus: "<p class='GREEN'  >BLUE</p>",    is_html: true, data: { stimulus_type: "incongruent", correct_color: 'GREEN' }, timing_response: 5000 },
+	{ stimulus: "<p class='RED'   >BLUE</p>",   is_html: true, data: { stimulus_type: "incongruent", correct_color: 'RED' }, timing_response: 5000 },
+	{ stimulus: "<p class='YELLOW'   >BLUE</p>", is_html: true, data: { stimulus_type: "incongruent", correct_color: 'YELLOW' }, timing_response: 5000 },
+	
+	{ stimulus: "<p class='GREEN'  >YELLOW</p>",    is_html: true, data: { stimulus_type: "incongruent", correct_color: 'GREEN' }, timing_response: 5000 },
+	{ stimulus: "<p class='RED'   >YELLOW</p>",   is_html: true, data: { stimulus_type: "incongruent", correct_color: 'RED' }, timing_response: 5000 },
+	{ stimulus: "<p class='BLUE'   >YELLOW</p>", is_html: true, data: { stimulus_type: "incongruent", correct_color: 'BLUE' }, timing_response: 5000 }
+    ];
+
+    // show the same number of congruent and incongruent tasks, each incongruent tasks is displayed twice
+    var all_real_trials = jsPsych.randomization.repeat(real_stimuli, 2);
+
+    var real_block = {
+    	type: 'single-stim',
+	choices: ['b', 'y', 'r', 'g'],
+	timing_post_trial: post_trial_gap,
+	timeline: all_real_trials,
+	on_finish: function(data) {
+		jsPsych.data.addDataToLastTrial({is_real_element: true});
+	    	var correct = false;
+	   	if(data.correct_color == 'RED' && data.key_press == 82){
+	      		correct = true;
+	   	} else if(data.correct_color == 'GREEN' && data.key_press == 71){
+	      		correct = true;
+	  	} else if(data.correct_color == 'BLUE' && data.key_press == 66) {
+		        correct = true;
+		} else if(data.correct_color == 'YELLOW' && data.key_press == 89) {
+		        correct = true;
+		}
+	   	jsPsych.data.addDataToLastTrial({correct: correct});
+	}
+    };
+
+    timeline.push( real_block );
     timeline.push( { type: 'text', text: debrief } );
 
     jsPsych.init({
        timeline: timeline,
        on_finish: function(data) {
-	      // call from tutorial displays JSON string as final page
-   	      // jsPsych.data.displayData();
-
 	      jQuery.post('code/php/events.php',
 		{ "data": JSON.stringify(jsPsych.data.getData()), "date": moment().format() }, function(data) {
-                  // did it work?
-                  console.log(data);
-		  if (data.ok == 0) {
+		  if (typeof data.ok == 'undefined' || data.ok == 0) {
 		     alert('Error: ' + data.message);
 		  }
-                  // export now
+                  // export as csv for download on client
                   exportToCsv("Stroop-Task_" + Site + "_" + SubjectID + "_" + Session + "_" + moment().format() + ".csv",
 		  			     jsPsych.data.getData());
 	      });
-
-
        }
     });
     
