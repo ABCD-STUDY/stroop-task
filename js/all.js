@@ -47,7 +47,7 @@ function storeSubjectAndName() {
     var data = {
 	"subjid": subject,
 	"sessionid": session,
-	"task": "little-man-task"
+	"task": "stroop"
     };
     
     jQuery.get('../../code/php/session.php', data, function() {

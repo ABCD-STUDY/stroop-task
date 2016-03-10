@@ -1,3 +1,6 @@
+<!doctype html>
+<html>
+
 <?php
   session_start();
 
@@ -46,11 +49,10 @@
 
 ?>
 
-<!doctype html>
-<html>
 
   <head>
     <title>Stroop Task</title>
+    <meta charset="utf-8" />
     <!-- Load jQuery -->
     <script src="js/jquery.min.js"></script>
     <script src='js/moment.min.js'></script>
@@ -59,6 +61,7 @@
     <script src="js/jspsych/jspsych.js"></script>
     <script src="js/jspsych/plugins/jspsych-text.js"></script>
     <script src="js/jspsych/plugins/jspsych-single-stim.js"></script>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
     <!-- Load the stylesheet -->
     <!-- <link href="experiment.css" type="text/css" rel="stylesheet"></link> -->
     <link href="js/jspsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
@@ -111,6 +114,15 @@ h1 {
    border-bottom: double #555;
    padding-bottom: 30px;
 }
+h2 {
+   color: #ffffff;
+   font-family: 'Lato', sans-serif;
+   font-size: 34px;
+   font-weight: 300;
+   line-height: 48px;
+   margin: 0 0 48px;
+   padding-bottom: 30px;
+}
 p {
    color: #adb7bd;
    font-family: 'Open Sans', Arial, sans-serif;
@@ -149,8 +161,155 @@ a:hover { color: #ffffff }
   <body bgcolor="#292929">
     <div id="jspsych_target"></div>
   </body>
-
+  
   <script>
+
+// write a page with the stats calculated from the data
+function createStats( data ) {
+    var con = [];
+    var incon = [];
+    // focus data
+
+    var numConCorrect = 0;
+    var numInConCorrect = 0;
+    var totalCon = 0;
+    var totalInCon = 0;
+    for (var i = 0; i < data.length; i++) {
+	if (typeof data[i].is_real_element != 'undefined' && data[i].is_real_element == true && data[i].key_press != -1) {
+            if (data[i].stimulus_type == "congruent") {
+		con.push(data[i].rt);
+		totalCon++;
+		if (data[i].correct == true)
+		  numConCorrect++;
+	    }
+ 	    if (data[i].stimulus_type == "incongruent") {
+		incon.push(data[i].rt);
+		totalInCon++;
+		if (data[i].correct == true)
+		  numInConCorrect++;
+	    }
+	}
+    }
+    // create stats
+    mincon   = con.reduce(function(a, b) { return (b < a)?b:a; });
+    maxcon   = con.reduce(function(a, b) { return (b > a)?b:a; });
+    minincon = incon.reduce(function(a, b) { return (b < a)?b:a; });
+    maxincon = incon.reduce(function(a, b) { return (b > a)?b:a; });
+
+    tmin = (mincon < minincon)?mincon:minincon;
+    tmax = (maxcon > maxincon)?maxcon:maxincon;					 
+			
+    // we would like to get a histogram of reaction times (not the once that are -1)
+    // for the congruent and the incongruent tasks
+    var histCong = new Array(5).fill(0);
+    var space = (maxcon-mincon) / (histCong.length-1);			
+    con.map(function(a) { histCong[ Math.round( (a-mincon)/(maxcon-mincon) * (histCong.length-1)  ) ]++; });
+    var sumcon = histCong.reduce(function(a, b) { return a+(b*space); });
+    histCong = histCong.map(function(a) { return a/sumcon; });
+	
+    var histInCong = new Array(5).fill(0);
+    incon.map(function(a) { histInCong[ Math.round( (a-minincon)/(maxincon-minincon) * (histInCong.length-1)  ) ]++; });
+    space = (maxincon-minincon) / (histInCong.length-1);			
+    var sumincon = histInCong.reduce(function(a, b) { return a+(b*space); });
+    histInCong = histInCong.map(function(a) { return a/sumincon; });
+    
+    
+    // we also like to have the mean and variance for both
+    var meancon = con.reduce( function (a, b) { return a+b; })/con.length;
+    var meanincon = incon.reduce( function (a, b) { return a+b; })/incon.length;
+    var varcon = con.map( function (a) { return (a-meancon) * (a-meancon); }).reduce(function(a,b) { return a+b; }) /(con.length - 1);
+    var stdcon = Math.sqrt(varcon);
+    var varincon = incon.map( function (a) { return (a-meanincon) * (a-meanincon); }).reduce(function(a,b) { return a+b; }) /(incon.length - 1)
+    var stdincon = Math.sqrt(varincon);
+    var curveCon = [ new Array(100).fill(0), new Array(100).fill(0) ];
+    curveCon[0] = curveCon[0].map(function(_, i) { return tmin + i * (tmax-tmin)/(100-1);  });
+    curveCon[1] = curveCon[0].map(function(a,i) { return 1.0/(stdcon * Math.sqrt(2.0*3.1415927)) * Math.exp( - (a-meancon)*(a-meancon)/(2.0*stdcon*stdcon)) ; });
+    space = (tmax-tmin) / (100-1);
+    var sum2 = curveCon[1].reduce(function(a,b) { return a+(b*space); });
+    curveCon[1] = curveCon[1].map(function(a,i) { return a/sum2; });			
+			
+    var curveInCon = [ new Array(100).fill(0), new Array(100).fill(0) ];
+    curveInCon[0] = curveInCon[0].map(function(_, i) { return tmin + i * (tmax-tmin)/(100-1);  });
+    curveInCon[1] = curveInCon[0].map(function(a,i) { return 1.0/(stdincon * Math.sqrt(2.0*3.1415927)) * Math.exp( - (a-meanincon)*(a-meanincon)/(2.0*stdincon*stdincon)) ; });
+    space = (tmax-tmin) / (100-1);			
+    sum2 = curveInCon[1].reduce(function(a,b) { return a+(b*space); });
+    curveInCon[1] = curveInCon[1].map(function(a,i) { return a/sum2; });			
+
+    // write the page to w using data in data
+    str = "\<h2 style='margin-top: 30px; margin-left: 40px;'\>"+ SubjectID +", "+ Session +"\</h2\>";
+    str = str + "\<div id='instructions'\>\<p\>Thank you for participating!\</p\>\</div\>";
+    str = str + "\<div id='histogram'\>\</div\>\<div style='margin-left: 40px;'\>";
+    str = str + "\<p\>\<div\>mean reaction time (congruent): " + Math.round(meancon,0) +"ms (&#177;" + Math.round(stdcon,2) + ")\</div\>";
+    str = str + "\<div\>mean reaction time (in-congruent): "+Math.round(meanincon,0)+"ms (&#177;"+ Math.round(stdincon,2) +")\</div\>";
+    str = str + "\<div\>congruent answers (correct/total): " + numConCorrect + "/" + totalCon + "\</div\>";
+    str = str + "\<div\>in-congruent answers (correct/total): " + numInConCorrect + "/" + totalInCon + "\</div\>";
+    str = str + "\</p\>\<div\>";
+
+    // we have the placeholder for plotly in the string, look for it after the page is on to add the plot itself
+    setTimeout(function () {
+	var con  = {
+      	    marker: {
+	  	color: 'rgb(0,100,80)'
+  	    },
+	    name: 'congruent',
+	    x: histCong.map(function(a, i) { return i*(maxcon-mincon)/(histCong.length-1) + mincon; }),
+	    y: histCong,
+	    type: 'bar'
+	};
+	var incon  = {
+	    marker: {
+		color: 'rgb(176,0,41)'
+	    },
+	    name: 'in-congruent',
+	    x: histInCong.map(function(a, i) { return i*(maxincon-minincon)/(histInCong.length-1) + minincon; }),
+            y: histInCong,
+	    type: 'bar'
+	};
+	var curvecon = {
+	    line: {
+		color: 'rgb(0,100,80)'
+	    },
+	    name: 'fit congruent',
+	    x: curveCon[0],
+	    y: curveCon[1],
+	    type: 'scatter'
+	};
+	var curveincon = {
+	    line: {
+		color: 'rgb(176,0,41)'
+	    },
+	    name: 'fit in-congruent',
+	    x: curveInCon[0],
+	    y: curveInCon[1],
+	    type: 'scatter'
+	};
+	var data = [ con, incon, curvecon, curveincon ];
+        var layout = {
+	    autosize: true,
+	    paper_bgcolor: '#292929',
+	    plot_bgcolor: '#292929',
+	    xaxis: {
+		tickcolor: '#fff',
+   	        titlefont: { color: '#fff' },
+   	        tickfont: { color: '#fff' },
+		linecolor: '#fff'
+	    },
+	    yaxis: {
+		tickcolor: '#fff',
+   	        titlefont: { color: '#fff' },
+   	        tickfont: { color: '#fff' },
+		linecolor: '#fff'
+	    },
+	    legend: {
+		font: { color: '#fff' }
+	    }
+	};
+	
+	Plotly.newPlot('histogram', data, layout);
+    }, 500); // we wait for the elements to be written to the page before we call plotly with the id of the field
+    return str;
+}
+
 
 function exportToCsv(filename, rows) {
     var k = { "SubjectID": 1, "Site": 1, "Session": 1 };
@@ -212,9 +371,6 @@ function exportToCsv(filename, rows) {
 	"key that corresponds to the color (r-red, g-green, b-blue, y-yellow)." +
 	" For example you would press 'r' on the keyboard for this image. Press enter to start.</p>";
 
-    var debrief = "<div id='instructions'><p>Thank you for " +
-	  "participating! Press enter to see the data.</p></div>";
-
     var startreal = "<div id='instructions'><p>Now the same with words. " +
 	  "Press enter to see the data.</p></div>";
 
@@ -242,7 +398,7 @@ function exportToCsv(filename, rows) {
     var timeline = [];
     timeline.push( { type: 'text', text: welcome_message } );
     timeline.push( { type: 'text', text: instructions } );
-    timeline.push( test_block );
+    // timeline.push( test_block );
     timeline.push( { type: 'text', text: startreal } );
     
     var real_stimuli = [
@@ -303,7 +459,12 @@ function exportToCsv(filename, rows) {
     };
 
     timeline.push( real_block );
-    timeline.push( { type: 'text', text: debrief } );
+
+    timeline.push( { type: 'text',
+    		     text: function() {
+   			return createStats( jsPsych.data.getData() );
+		     }		     
+    });
 
     jsPsych.init({
        timeline: timeline,
@@ -311,12 +472,13 @@ function exportToCsv(filename, rows) {
 	      jQuery.post('code/php/events.php',
 		{ "data": JSON.stringify(jsPsych.data.getData()), "date": moment().format() }, function(data) {
 		  if (typeof data.ok == 'undefined' || data.ok == 0) {
-		     alert('Error: ' + data.message);
+		   //  alert('Error: ' + data.message);
 		  }
                   // export as csv for download on client
                   exportToCsv("Stroop-Task_" + Site + "_" + SubjectID + "_" + Session + "_" + moment().format() + ".csv",
 		  			     jsPsych.data.getData());
 	      });
+	      
        }
     });
     
