@@ -108,7 +108,7 @@ function exportToCsv(filename, rows) {
 }
 
 jQuery(document).ready(function() {
-    
+
     // add the session variables to the interface
     jQuery('#user_name').text("User: " + user_name);
     jQuery('#session-participant').val(subjid);

@@ -55,6 +55,7 @@
     <meta charset="utf-8" />
     <!-- Load jQuery -->
     <script src="js/jquery.min.js"></script>
+    <script src="/js/jquery.ui.touch-punch.min.js"></script>    
     <script src='js/moment.min.js'></script>
    
     <!-- Load the jspsych library and plugins -->
@@ -239,8 +240,8 @@ function createStats( data ) {
     str = "\<h2 style='margin-top: 30px; margin-left: 40px;'\>"+ SubjectID +", "+ Session +"\</h2\>";
     str = str + "\<div id='instructions'\>\<p\>Thank you for participating!\</p\>\</div\>";
     str = str + "\<div id='histogram'\>\</div\>\<div style='margin-left: 40px;'\>";
-    str = str + "\<p\>\<div\>mean reaction time (congruent): " + Math.round(meancon,0) +"ms (&#177;" + Math.round(stdcon,2) + ")\</div\>";
-    str = str + "\<div\>mean reaction time (in-congruent): "+Math.round(meanincon,0)+"ms (&#177;"+ Math.round(stdincon,2) +")\</div\>";
+    str = str + "\<p\>\<div\>mean reaction time (congruent): " + Math.round(meancon,0) +"msec (&#177;" + Math.round(stdcon,2) + "SD)\</div\>";
+    str = str + "\<div\>mean reaction time (in-congruent): "+Math.round(meanincon,0)+"msec (&#177;"+ Math.round(stdincon,2) +"SD)\</div\>";
     str = str + "\<div\>congruent answers (correct/total): " + numConCorrect + "/" + totalCon + "\</div\>";
     str = str + "\<div\>in-congruent answers (correct/total): " + numInConCorrect + "/" + totalInCon + "\</div\>";
     str = str + "\</p\>\<div\>";
@@ -288,13 +289,15 @@ function createStats( data ) {
 	    autosize: true,
 	    paper_bgcolor: '#292929',
 	    plot_bgcolor: '#292929',
-	    xaxis: {
+ 	    xaxis: {
+	        title: 'reaction time (msec)',		
 		tickcolor: '#fff',
    	        titlefont: { color: '#fff' },
    	        tickfont: { color: '#fff' },
 		linecolor: '#fff'
 	    },
 	    yaxis: {
+	        title: 'rel. probability',		
 		tickcolor: '#fff',
    	        titlefont: { color: '#fff' },
    	        tickfont: { color: '#fff' },
@@ -363,8 +366,6 @@ function exportToCsv(filename, rows) {
     var all_test_trials = jsPsych.randomization.repeat(test_stimuli, 5);
 
     // Experiment Instructions
-    var welcome_message = "<div class='date'>Adolescent Brain Cognitive Development</div><div style='position: relative;'><h1>ABCD's Stroop Test</h1><div class='date2'>March 2016</div></div><p>Naming the color of a word printed in different inks poses a problem if the word itself denotes a color. The work \"<span style='color: lightgreen;'>red</span>\" written with green ink can be more easily read than its color can be named. This creates a reaction time delay that can be measured using the Stroop test. After an initial training phase this application will try to measure the delay between naming correctly or incorrectly colored words.</p><br/><p>Source code for this assessment has been created using jsPsych and can be viewed on <a href='https://github.com/ABCD-STUDY/stroop'>github</a>.</p>";
-
     var instructions = "<div id='instructions'><p>You will see a " +
 	"series of images that look similar to this:</p><p>" +
 	"<p class='RED'>XXXXXXXX</p><p>Press the color " +
@@ -372,7 +373,7 @@ function exportToCsv(filename, rows) {
 	" For example you would press 'r' on the keyboard for this image. Press enter to start.</p>";
 
     var startreal = "<div id='instructions'><p>Now the same with words. " +
-	  "Press enter to see the data.</p></div>";
+	  "Press enter to start.</p></div>";
 
     var test_block = {
     	type: 'single-stim',
@@ -396,9 +397,8 @@ function exportToCsv(filename, rows) {
     };
 
     var timeline = [];
-    timeline.push( { type: 'text', text: welcome_message } );
     timeline.push( { type: 'text', text: instructions } );
-    // timeline.push( test_block );
+    timeline.push( test_block ); // add the test block
     timeline.push( { type: 'text', text: startreal } );
     
     var real_stimuli = [

@@ -60,7 +60,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Little-Man-Task</title>
+  <title>ABCD's Stroop Task</title>
 
   <!-- Bootstrap Core CSS -->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -69,9 +69,9 @@
   <!-- required for the date and time pickers -->
   <link href="css/bootstrap-datetimepicker.css" rel="stylesheet" type="text/css">
 
-  <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.0/fullcalendar.min.css' />
+  <!-- <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.0/fullcalendar.min.css' /> -->
   <!-- media="print" is required to display the fullcalendar header buttons -->
-  <link rel='stylesheet' media='print' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.0/fullcalendar.print.css' />
+  <!-- <link rel='stylesheet' media='print' href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.0/fullcalendar.print.css' /> -->
 
   <link rel="stylesheet" href="css/style.css">
 
@@ -118,10 +118,23 @@
   <!-- start session button -->
   <section id="admin-top" class="bg-light-gray">
     <div class="container">
+      <div class="row" style="margin-bottom: 20px;"></div>
+      <div class="row start-page">
+        <div class="col-md-12">
+          <div class="date">Adolescent Brain Cognitive Development</div>
+	  <div style='position: relative;'>
+	    <h1>ABCD's Stroop Test</h1>
+	    <div class='date2'>March 2016</div>
+	  </div>
+	  <p>It is difficult to name the color of a word printed in different inks if the word itself denotes a color. The work "<span style='color: green;'>red</span>" written with green ink can be more easily read as 'red' than its color can be named as 'green'. This effect creates a reaction time delay that can be measured using the Stroop test. After an initial training phase this application will try to measure the delay between naming correctly and incorrectly colored words.</p><br/><p>Source code for this assessment has been created using jsPsych and can be viewed on <a href='https://github.com/ABCD-STUDY/stroop'>github</a>.
+	  </p>
+        </div>
+      </div>
+      <div class="row" style="margin-bottom: 20px;"></div>
       <div class="row">
         <div class="col-md-12">
           <center>
-            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#defineSession" title="Redirects to the Stroop Task page.">New Session</button>
+            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#defineSession" title="Create new session and redirect to the Stroop Task page.">New Session</button>
           </center>
         </div>
       </div>
@@ -165,7 +178,7 @@
     <div class="modal-content">
       <div class="close-modal" data-dismiss="modal">
         <div class="lr">
-          <button class="close">x</button>
+          <button class="close" style="font-size: 52px;margin-right: 20px;">x</button>
         </div>
       </div>
       <div class="container">
@@ -178,7 +191,7 @@
 
                   <div class="form-group">
                     <label for="session-participant" class="control-label">Participant</label>
-                    <input type="text" class="form-control" placeholder="NDAR-#####" id="session-participant" required data-validation-required-message="Please enter the participant NDAR ID.">
+                    <input type="text" class="form-control" placeholder="NDAR-#####" id="session-participant" required data-validation-required-message="Please enter the participant NDAR ID." autofocus>
                     <p class="help-block text-danger"></p>
                   </div>
 
