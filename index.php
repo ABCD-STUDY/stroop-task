@@ -126,7 +126,7 @@
 	    <h1>ABCD's Stroop Test</h1>
 	    <div class='date2'>March 2016</div>
 	  </div>
-	  <p>It is difficult to name the color of a word printed in different inks if the word itself denotes a color. The work "<span style='color: green;'>red</span>" written with green ink can be more easily read as 'red' than its color can be named as 'green'. This effect creates a reaction time delay that can be measured using the Stroop test. After an initial training phase this application will try to measure the delay between naming correctly and incorrectly colored words.</p><br/><p>Source code for this assessment has been created using jsPsych and can be viewed on <a href='https://github.com/ABCD-STUDY/stroop'>github</a>.
+	  <p>It is difficult to name the color of a word printed in different inks if the word itself denotes a color. The word "<span style='color: green;'>red</span>" written with green ink can be more easily read as 'red' than its color can be named as 'green'. This effect creates a reaction time delay that can be measured using the Stroop test. After an initial training phase this application will try to measure the delay between naming correctly and incorrectly colored words.</p><br/><p>Source code for this assessment has been created using jsPsych and can be viewed on <a href='https://github.com/ABCD-STUDY/stroop'>github</a>.
 	  </p>
         </div>
       </div>
