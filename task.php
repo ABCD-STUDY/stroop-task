@@ -62,6 +62,7 @@
     <script src="js/jspsych/jspsych.js"></script>
     <script src="js/jspsych/plugins/jspsych-text.js"></script>
     <script src="js/jspsych/plugins/jspsych-single-stim.js"></script>
+    <script src="js/jspsych/plugins/jspsych-button-response.js"></script>
     <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
     <!-- Load the stylesheet -->
     <!-- <link href="experiment.css" type="text/css" rel="stylesheet"></link> -->
@@ -82,7 +83,7 @@ body {
    font-weight: 900;
 }
 .GREEN {
-   color: green;
+   color: rgb(0,250,0);
    text-align: center;
    font-size: 32pt;
    vertical-align: middle;
@@ -154,7 +155,43 @@ a:hover { color: #ffffff }
 }
 
 .date2 { color: #bbc3c8; background: #292929; display: inline-block; font-family: 'Georgia', serif; font-style: italic; font-size: 18px; line-height: 22px; margin: 0 0 20px 18px; padding: 10px 12px 8px; position: absolute; bottom: -36px; }
-    </style>
+
+.jspsych-btn {
+  margin-right: 30px;
+  border-radius: 40px;
+  width: 80px;
+  height: 80px;
+}
+.red {
+  background-color: red;
+}
+.yellow {
+  background-color: yellow;
+}
+.green {
+  background-color: rgb(0,250,0);
+}
+.blue {
+  background-color: blue;
+}
+#jspsych-button-response-button-0 {
+  background-color: red;
+  color: red;
+}
+#jspsych-button-response-button-1 {
+  background-color: yellow;
+  color: yellow;
+}
+#jspsych-button-response-button-2 {
+  background-color: rgb(0,250,0);
+  color: rgb(0,250,0);
+}
+#jspsych-button-response-button-3 {
+  background-color: blue;
+  color: blue;
+}
+
+</style>
 
 
   </head>
@@ -365,31 +402,29 @@ function exportToCsv(filename, rows) {
     // training is long (20 is 20*4 stimulus presentations), test is short
     var all_test_trials = jsPsych.randomization.repeat(test_stimuli, 5);
 
+    // Introduction
+    var start_instructions = "<div id='inst'><p><br/>In this task, you will press the button that matches the color of a word, while ignoring what the word says.<br/>The possible color responses are:<p>Red<span style='margin-right: 30px;'></span>Yellow<span style='margin-right: 30px;'></span>Green<span style='margin-right: 30px;'></span>Blue<br/>Press Enter when you are ready to begin.</p>";
+			
     // Experiment Instructions
-    var instructions = "<div id='instructions'><p>You will see a " +
-	"series of images that look similar to this:</p><p>" +
-	"<p class='RED'>XXXXXXXX</p><p>Press the color " +
-	"key that corresponds to the color (r-red, g-green, b-blue, y-yellow)." +
-	" For example you would press 'r' on the keyboard for this image. Press enter to start.</p>";
+    var instructions = "<div id='instructions'><p>To get you started, we will give you some practice with crosses.<br/>Your job is to press the button that matches the color of the crosses.<br/>The color that goes with each button is showing below<br/><br/><button class='jspsych-btn red'></button><button class='jspsych-btn yellow'></button><button class='jspsych-btn green'></button><button class='jspsych-btn blue'></button><br/><br/>Hit Enter to Begin</p>";
 
-    var startreal = "<div id='instructions'><p>Now the same with words. " +
-	  "Press enter to start.</p></div>";
+    var startreal = "<div id='instructions'><p><br/>You are finished with the practice trials.<br/><br/>Now you will begin the task.<br/><br/>Remember, you should base your response of the color of the ink in which the word is printed, while ignoring the meaning of the printed word.<br/><br/>From left to right, the responses are Red, Yellow, Green, Blue.<br/><br/>Hit Enter when you are ready to begin.</p></div>";
 
     var test_block = {
-    	type: 'single-stim',
-	choices: ['b', 'y', 'r', 'g'],
+    	type: 'button-response',
+	choices: ['red', 'yellow', 'green', 'blue'],
 	timing_post_trial: post_trial_gap,
 	timeline: all_test_trials,
 	on_finish: function(data) {
 		jsPsych.data.addDataToLastTrial({is_real_element: false});
 	    	var correct = false;
-	   	if(data.stimulus_type == 'red' && data.key_press == 82){
+	   	if(data.stimulus_type == 'red' && data.button_pressed == 0){
 	      		correct = true;
-	   	} else if(data.stimulus_type == 'green' && data.key_press == 71){
+	   	} else if(data.stimulus_type == 'yellow' && data.button_pressed == 1){
 	      		correct = true;
-	  	} else if(data.stimulus_type == 'blue' && data.key_press == 66) {
+	  	} else if(data.stimulus_type == 'green' && data.button_pressed == 2) {
 		        correct = true;
-		} else if(data.stimulus_type == 'yellow' && data.key_press == 89) {
+		} else if(data.stimulus_type == 'blue' && data.button_pressed == 3) {
 		        correct = true;
 		}
 	   	jsPsych.data.addDataToLastTrial({correct: correct});
@@ -397,8 +432,27 @@ function exportToCsv(filename, rows) {
     };
 
     var timeline = [];
+    timeline.push( { type: 'text', text: start_instructions } );
     timeline.push( { type: 'text', text: instructions } );
     timeline.push( test_block ); // add the test block
+    timeline.push( { type: 'text', text: function() {
+        var data = jsPsych.data.getData();
+	
+	var numCorrect = 0;
+	var total = 0;
+	for (var i = 0; i < data.length; i++) {
+	    if (typeof data[i].is_real_element != 'undefined' && data[i].is_real_element == false && data[i].key_press != -1) {
+                if ( (data[i].correct_color == "RED" && data[i].button_pressed == 0) ||
+		     (data[i].correct_color == "YELLOW" && data[i].button_pressed == 1) ||
+		     (data[i].correct_color == "GREEN" && data[i].button_pressed == 2) ||
+		     (data[i].correct_color == "BLUE" && data[i].button_pressed == 3))
+		    numCorrect++;
+		total++;
+	    }
+	}
+					    
+	return "You did well!<br/><br/>" + numCorrect + "/" + total;
+    } } );
     timeline.push( { type: 'text', text: startreal } );
     
     var real_stimuli = [
@@ -438,20 +492,20 @@ function exportToCsv(filename, rows) {
     var all_real_trials = jsPsych.randomization.repeat(real_stimuli, 2);
 
     var real_block = {
-    	type: 'single-stim',
-	choices: ['b', 'y', 'r', 'g'],
+    	type: 'button-response',
+	choices: ['red', 'yellow', 'green', 'blue'],
 	timing_post_trial: post_trial_gap,
 	timeline: all_real_trials,
 	on_finish: function(data) {
 		jsPsych.data.addDataToLastTrial({is_real_element: true});
 	    	var correct = false;
-	   	if(data.correct_color == 'RED' && data.key_press == 82){
+	   	if(data.correct_color == 'RED' && data.button_pressed == 0){
 	      		correct = true;
-	   	} else if(data.correct_color == 'GREEN' && data.key_press == 71){
+	   	} else if(data.correct_color == 'YELLOW' && data.button_pressed == 1){
 	      		correct = true;
-	  	} else if(data.correct_color == 'BLUE' && data.key_press == 66) {
+	  	} else if(data.correct_color == 'GREEN' && data.button_pressed == 2) {
 		        correct = true;
-		} else if(data.correct_color == 'YELLOW' && data.key_press == 89) {
+		} else if(data.correct_color == 'BLUE' && data.button_pressed == 3) {
 		        correct = true;
 		}
 	   	jsPsych.data.addDataToLastTrial({correct: correct});
@@ -463,7 +517,7 @@ function exportToCsv(filename, rows) {
     timeline.push( { type: 'text',
     		     text: function() {
    			return createStats( jsPsych.data.getData() );
-		     }		     
+		   }
     });
 
     jsPsych.init({
@@ -477,7 +531,10 @@ function exportToCsv(filename, rows) {
                   // export as csv for download on client
                   exportToCsv("Stroop-Task_" + Site + "_" + SubjectID + "_" + Session + "_" + moment().format() + ".csv",
 		  			     jsPsych.data.getData());
-	      });
+		}).error(function() {
+                  exportToCsv("Stroop-Task_" + Site + "_" + SubjectID + "_" + Session + "_" + moment().format() + ".csv",
+		  			     jsPsych.data.getData());			
+		});
 	      
        }
     });
