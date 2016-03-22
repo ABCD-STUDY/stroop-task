@@ -205,37 +205,37 @@ a:hover { color: #ffffff }
 // write a page with the stats calculated from the data
 function createStats( data ) {
     var con = [];
-    var incon = [];
+    var neut = [];
     // focus data
 
     var numConCorrect = 0;
-    var numInConCorrect = 0;
+    var numNeutCorrect = 0;
     var totalCon = 0;
-    var totalInCon = 0;
+    var totalNeut = 0;
     for (var i = 0; i < data.length; i++) {
-	if (typeof data[i].is_real_element != 'undefined' && data[i].is_real_element == true && data[i].key_press != -1) {
-            if (data[i].stimulus_type == "congruent") {
+	if (typeof data[i].is_real_element != 'undefined' && data[i].is_real_element == true && data[i].button_pressed != -1) {
+            if (data[i].stimulus_type == "inc") {
 		con.push(data[i].rt);
 		totalCon++;
 		if (data[i].correct == true)
 		  numConCorrect++;
 	    }
- 	    if (data[i].stimulus_type == "incongruent") {
-		incon.push(data[i].rt);
-		totalInCon++;
+ 	    if (data[i].stimulus_type == "neut") {
+		neut.push(data[i].rt);
+		totalNeut++;
 		if (data[i].correct == true)
-		  numInConCorrect++;
+		  numNeutCorrect++;
 	    }
 	}
     }
-    // create stats
+    // create stats (will not work is con or neut are empty)
     mincon   = con.reduce(function(a, b) { return (b < a)?b:a; });
     maxcon   = con.reduce(function(a, b) { return (b > a)?b:a; });
-    minincon = incon.reduce(function(a, b) { return (b < a)?b:a; });
-    maxincon = incon.reduce(function(a, b) { return (b > a)?b:a; });
+    minneut = neut.reduce(function(a, b) { return (b < a)?b:a; });
+    maxneut = neut.reduce(function(a, b) { return (b > a)?b:a; });
 
-    tmin = (mincon < minincon)?mincon:minincon;
-    tmax = (maxcon > maxincon)?maxcon:maxincon;					 
+    tmin = (mincon < minneut)?mneut:minneut;
+    tmax = (maxcon > maxneut)?maxcon:maxneut;					 
 			
     // we would like to get a histogram of reaction times (not the once that are -1)
     // for the congruent and the incongruent tasks
@@ -245,20 +245,20 @@ function createStats( data ) {
     var sumcon = histCong.reduce(function(a, b) { return a+(b*space); });
     histCong = histCong.map(function(a) { return a/sumcon; });
 	
-    var histInCong = new Array(5).fill(0);
-    incon.map(function(a) { histInCong[ Math.round( (a-minincon)/(maxincon-minincon) * (histInCong.length-1)  ) ]++; });
-    space = (maxincon-minincon) / (histInCong.length-1);			
-    var sumincon = histInCong.reduce(function(a, b) { return a+(b*space); });
-    histInCong = histInCong.map(function(a) { return a/sumincon; });
+    var histNeutg = new Array(5).fill(0);
+    neut.map(function(a) { histNeutg[ Math.round( (a-minneut)/(maxneut-minneut) * (histNeutg.length-1)  ) ]++; });
+    space = (maxneut-minneut) / (histNeutg.length-1);			
+    var sumneut = histNeutg.reduce(function(a, b) { return a+(b*space); });
+    histNeutg = histNeutg.map(function(a) { return a/sumneut; });
     
     
     // we also like to have the mean and variance for both
     var meancon = con.reduce( function (a, b) { return a+b; })/con.length;
-    var meanincon = incon.reduce( function (a, b) { return a+b; })/incon.length;
+    var meanneut = neut.reduce( function (a, b) { return a+b; })/neut.length;
     var varcon = con.map( function (a) { return (a-meancon) * (a-meancon); }).reduce(function(a,b) { return a+b; }) /(con.length - 1);
     var stdcon = Math.sqrt(varcon);
-    var varincon = incon.map( function (a) { return (a-meanincon) * (a-meanincon); }).reduce(function(a,b) { return a+b; }) /(incon.length - 1)
-    var stdincon = Math.sqrt(varincon);
+    var varneut = neut.map( function (a) { return (a-meanneut) * (a-meanneut); }).reduce(function(a,b) { return a+b; }) /(neut.length - 1)
+    var stdneut = Math.sqrt(varneut);
     var curveCon = [ new Array(100).fill(0), new Array(100).fill(0) ];
     curveCon[0] = curveCon[0].map(function(_, i) { return tmin + i * (tmax-tmin)/(100-1);  });
     curveCon[1] = curveCon[0].map(function(a,i) { return 1.0/(stdcon * Math.sqrt(2.0*3.1415927)) * Math.exp( - (a-meancon)*(a-meancon)/(2.0*stdcon*stdcon)) ; });
@@ -266,21 +266,21 @@ function createStats( data ) {
     var sum2 = curveCon[1].reduce(function(a,b) { return a+(b*space); });
     curveCon[1] = curveCon[1].map(function(a,i) { return a/sum2; });			
 			
-    var curveInCon = [ new Array(100).fill(0), new Array(100).fill(0) ];
-    curveInCon[0] = curveInCon[0].map(function(_, i) { return tmin + i * (tmax-tmin)/(100-1);  });
-    curveInCon[1] = curveInCon[0].map(function(a,i) { return 1.0/(stdincon * Math.sqrt(2.0*3.1415927)) * Math.exp( - (a-meanincon)*(a-meanincon)/(2.0*stdincon*stdincon)) ; });
+    var curveNeut = [ new Array(100).fill(0), new Array(100).fill(0) ];
+    curveNeut[0] = curveNeut[0].map(function(_, i) { return tmin + i * (tmax-tmin)/(100-1);  });
+    curveNeut[1] = curveNeut[0].map(function(a,i) { return 1.0/(stdneut * Math.sqrt(2.0*3.1415927)) * Math.exp( - (a-meanneut)*(a-meanneut)/(2.0*stdneut*stdneut)) ; });
     space = (tmax-tmin) / (100-1);			
-    sum2 = curveInCon[1].reduce(function(a,b) { return a+(b*space); });
-    curveInCon[1] = curveInCon[1].map(function(a,i) { return a/sum2; });			
+    sum2 = curveNeut[1].reduce(function(a,b) { return a+(b*space); });
+    curveNeut[1] = curveNeut[1].map(function(a,i) { return a/sum2; });			
 
     // write the page to w using data in data
     str = "\<h2 style='margin-top: 30px; margin-left: 40px;'\>"+ SubjectID +", "+ Session +"\</h2\>";
     str = str + "\<div id='instructions'\>\<p\>Thank you for participating!\</p\>\</div\>";
     str = str + "\<div id='histogram'\>\</div\>\<div style='margin-left: 40px;'\>";
-    str = str + "\<p\>\<div\>mean reaction time (congruent): " + Math.round(meancon,0) +"msec (&#177;" + Math.round(stdcon,2) + "SD)\</div\>";
-    str = str + "\<div\>mean reaction time (in-congruent): "+Math.round(meanincon,0)+"msec (&#177;"+ Math.round(stdincon,2) +"SD)\</div\>";
-    str = str + "\<div\>congruent answers (correct/total): " + numConCorrect + "/" + totalCon + "\</div\>";
-    str = str + "\<div\>in-congruent answers (correct/total): " + numInConCorrect + "/" + totalInCon + "\</div\>";
+    str = str + "\<p\>\<div\>mean reaction time (in-congruent): " + Math.round(meancon,0) +"msec (&#177;" + Math.round(stdcon,2) + "SD)\</div\>";
+    str = str + "\<div\>mean reaction time (neutral): "+Math.round(meanneut,0)+"msec (&#177;"+ Math.round(stdneut,2) +"SD)\</div\>";
+    str = str + "\<div\>in-congruent answers (correct/total): " + numConCorrect + "/" + totalCon + "\</div\>";
+    str = str + "\<div\>neutral answers (correct/total): " + numNeutCorrect + "/" + totalNeut + "\</div\>";
     str = str + "\</p\>\<div\>";
 
     // we have the placeholder for plotly in the string, look for it after the page is on to add the plot itself
@@ -289,39 +289,39 @@ function createStats( data ) {
       	    marker: {
 	  	color: 'rgb(0,100,80)'
   	    },
-	    name: 'congruent',
+	    name: 'in-congruent',
 	    x: histCong.map(function(a, i) { return i*(maxcon-mincon)/(histCong.length-1) + mincon; }),
 	    y: histCong,
 	    type: 'bar'
 	};
-	var incon  = {
+	var neut  = {
 	    marker: {
 		color: 'rgb(176,0,41)'
 	    },
-	    name: 'in-congruent',
-	    x: histInCong.map(function(a, i) { return i*(maxincon-minincon)/(histInCong.length-1) + minincon; }),
-            y: histInCong,
+	    name: 'neutral',
+	    x: histNeutg.map(function(a, i) { return i*(maxneut-minneut)/(histNeutg.length-1) + minneut; }),
+            y: histNeutg,
 	    type: 'bar'
 	};
 	var curvecon = {
 	    line: {
 		color: 'rgb(0,100,80)'
 	    },
-	    name: 'fit congruent',
+	    name: 'fit in-congruent',
 	    x: curveCon[0],
 	    y: curveCon[1],
 	    type: 'scatter'
 	};
-	var curveincon = {
+	var curveneut = {
 	    line: {
 		color: 'rgb(176,0,41)'
 	    },
-	    name: 'fit in-congruent',
-	    x: curveInCon[0],
-	    y: curveInCon[1],
+	    name: 'fit neutral',
+	    x: curveNeut[0],
+	    y: curveNeut[1],
 	    type: 'scatter'
 	};
-	var data = [ con, incon, curvecon, curveincon ];
+	var data = [ con, neut, curvecon, curveneut ];
         var layout = {
 	    autosize: true,
 	    paper_bgcolor: '#292929',
@@ -397,10 +397,14 @@ function exportToCsv(filename, rows) {
     	{ stimulus: "<p class='RED'   >XXXXXXXX</p>",    is_html: true, data: { stimulus_type: "red", correct_color: 'RED' }, timing_response: 5000 },
         { stimulus: "<p class='GREEN'   >XXXXXXXX</p>",  is_html: true, data: { stimulus_type: "green", correct_color: 'GREEN' }, timing_response: 5000 },
         { stimulus: "<p class='BLUE'   >XXXXXXXX</p>",   is_html: true, data: { stimulus_type: "blue", correct_color: 'BLUE' }, timing_response: 5000 },
-        { stimulus: "<p class='YELLOW'   >XXXXXXXX</p>", is_html: true, data: { stimulus_type: "yellow", correct_color: 'YELLOW' }, timing_response: 5000 } ];
+	{ stimulus: "<p class='YELLOW'   >XXXXXXXX</p>", is_html: true, data: { stimulus_type: "yellow", correct_color: 'YELLOW' }, timing_response: 5000 }
+    ];
+
+    // training length depends on the answers provided by the user, only if <N> correct answers have been provided in a row
+    // we quit the test
 
     // training is long (20 is 20*4 stimulus presentations), test is short
-    var all_test_trials = jsPsych.randomization.repeat(test_stimuli, 5);
+    var all_test_trials = jsPsych.randomization.repeat(test_stimuli, 10); // we will cut the test short if 10 in a row are done correctly
 
     // Introduction
     var start_instructions = "<div id='inst'><p><br/>In this task, you will press the button that matches the color of a word, while ignoring what the word says.<br/>The possible color responses are:<p>Red<span style='margin-right: 30px;'></span>Yellow<span style='margin-right: 30px;'></span>Green<span style='margin-right: 30px;'></span>Blue<br/>Press Enter when you are ready to begin.</p>";
@@ -410,6 +414,7 @@ function exportToCsv(filename, rows) {
 
     var startreal = "<div id='instructions'><p><br/>You are finished with the practice trials.<br/><br/>Now you will begin the task.<br/><br/>Remember, you should base your response of the color of the ink in which the word is printed, while ignoring the meaning of the printed word.<br/><br/>From left to right, the responses are Red, Yellow, Green, Blue.<br/><br/>Hit Enter when you are ready to begin.</p></div>";
 
+    var memCorrectInARow = 0;
     var test_block = {
     	type: 'button-response',
 	choices: ['red', 'yellow', 'green', 'blue'],
@@ -427,15 +432,22 @@ function exportToCsv(filename, rows) {
 		} else if(data.stimulus_type == 'blue' && data.button_pressed == 3) {
 		        correct = true;
 		}
+                if (correct) {
+                    memCorrectInARow++;
+	        } else {
+		    memCorrectInARow = 0;
+		}
 	   	jsPsych.data.addDataToLastTrial({correct: correct});
+                if (memCorrectInARow > 9) 
+	  	   jsPsych.endCurrentTimeline("You entered " + (memCorrectInARow+1 ) + " in a row correctly, lets continue.");
 	}
     };
 
     var timeline = [];
     timeline.push( { type: 'text', text: start_instructions } );
     timeline.push( { type: 'text', text: instructions } );
-    timeline.push( test_block ); // add the test block
-    timeline.push( { type: 'text', text: function() {
+    timeline.push( test_block ); // add the test block (variable length, needs <N> correct answers)
+    /* timeline.push( { type: 'text', text: function() {
         var data = jsPsych.data.getData();
 	
 	var numCorrect = 0;
@@ -452,52 +464,51 @@ function exportToCsv(filename, rows) {
 	}
 					    
 	return "You did well!<br/><br/>" + numCorrect + "/" + total;
-    } } );
+    } } ); */
     timeline.push( { type: 'text', text: startreal } );
-    
-    var real_stimuli = [
-	{ stimulus: "<p class='RED'   >RED</p>",    is_html: true, data: { stimulus_type: "congruent", correct_color: 'RED' }, timing_response: 5000 },
-	{ stimulus: "<p class='GREEN'   >GREEN</p>",  is_html: true, data: { stimulus_type: "congruent", correct_color: 'GREEN' }, timing_response: 5000 },
-	{ stimulus: "<p class='BLUE'   >BLUE</p>",   is_html: true, data: { stimulus_type: "congruent", correct_color: 'BLUE' }, timing_response: 5000 },
-	{ stimulus: "<p class='YELLOW'   >YELLOW</p>", is_html: true, data: { stimulus_type: "congruent", correct_color: 'YELLOW' }, timing_response: 5000 },
 
-	{ stimulus: "<p class='RED'   >RED</p>",    is_html: true, data: { stimulus_type: "congruent", correct_color: 'RED' }, timing_response: 5000 },
-	{ stimulus: "<p class='GREEN'   >GREEN</p>",  is_html: true, data: { stimulus_type: "congruent", correct_color: 'GREEN' }, timing_response: 5000 },
-	{ stimulus: "<p class='BLUE'   >BLUE</p>",   is_html: true, data: { stimulus_type: "congruent", correct_color: 'BLUE' }, timing_response: 5000 },
-	{ stimulus: "<p class='YELLOW'   >YELLOW</p>", is_html: true, data: { stimulus_type: "congruent", correct_color: 'YELLOW' }, timing_response: 5000 },
+    // we want to run two experiments, the first will show all incongruent stimuli once and all neutral stimuli 3 times
+    var uneqlist = [
+	{ w: 1, stimulus: "<p class='RED'   >BLUE</p>", is_html: true, data: { stimulus_type: "inc", correct_color: 'RED' }, timing_response: 5000 },
+	{ w: 1, stimulus: "<p class='YELLOW'   >RED</p>", is_html: true, data: { stimulus_type: "inc", correct_color: 'YELLOW' }, timing_response: 5000 },
+	{ w: 1, stimulus: "<p class='GREEN'   >YELLOW</p>", is_html: true, data: { stimulus_type: "inc", correct_color: 'GREEN' }, timing_response: 5000 },
+	{ w: 1, stimulus: "<p class='BLUE'   >GREEN</p>", is_html: true, data: { stimulus_type: "inc", correct_color: 'BLUE' }, timing_response: 5000 },
+	{ w: 1, stimulus: "<p class='GREEN'   >BLUE</p>", is_html: true, data: { stimulus_type: "inc", correct_color: 'GREEN' }, timing_response: 5000 },
+	{ w: 1, stimulus: "<p class='BLUE'   >RED</p>", is_html: true, data: { stimulus_type: "inc", correct_color: 'BLUE' }, timing_response: 5000 },
+	{ w: 1, stimulus: "<p class='RED'   >YELLOW</p>", is_html: true, data: { stimulus_type: "inc", correct_color: 'RED' }, timing_response: 5000 },
+	{ w: 1, stimulus: "<p class='YELLOW'   >GREEN</p>", is_html: true, data: { stimulus_type: "inc", correct_color: 'YELLOW' }, timing_response: 5000 },
+	{ w: 1, stimulus: "<p class='YELLOW'   >BLUE</p>", is_html: true, data: { stimulus_type: "inc", correct_color: 'YELLOW' }, timing_response: 5000 },
+	{ w: 1, stimulus: "<p class='GREEN'   >RED</p>", is_html: true, data: { stimulus_type: "inc", correct_color: 'GREEN' }, timing_response: 5000 },
+	{ w: 1, stimulus: "<p class='BLUE'   >YELLOW</p>", is_html: true, data: { stimulus_type: "inc", correct_color: 'BLUE' }, timing_response: 5000 },
+	{ w: 1, stimulus: "<p class='RED'   >GREEN</p>", is_html: true, data: { stimulus_type: "inc", correct_color: 'RED' }, timing_response: 5000 },
 
-	{ stimulus: "<p class='RED'   >RED</p>",    is_html: true, data: { stimulus_type: "congruent", correct_color: 'RED' }, timing_response: 5000 },
-	{ stimulus: "<p class='GREEN'   >GREEN</p>",  is_html: true, data: { stimulus_type: "congruent",correct_color: 'GREEN' }, timing_response: 5000 },
-	{ stimulus: "<p class='BLUE'   >BLUE</p>",   is_html: true, data: { stimulus_type: "congruent", correct_color: 'BLUE' }, timing_response: 5000 },
-	{ stimulus: "<p class='YELLOW'   >YELLOW</p>", is_html: true, data: { stimulus_type: "congruent", correct_color: 'YELLOW' }, timing_response: 5000 },
-
-	{ stimulus: "<p class='RED'   >GREEN</p>",    is_html: true, data: { stimulus_type: "incongruent", correct_color: 'RED' }, timing_response: 5000 },
-	{ stimulus: "<p class='BLUE'   >GREEN</p>",   is_html: true, data: { stimulus_type: "incongruent", correct_color: 'BLUE' }, timing_response: 5000 },
-	{ stimulus: "<p class='YELLOW'   >GREEN</p>", is_html: true, data: { stimulus_type: "incongruent", correct_color: 'YELLOW' }, timing_response: 5000 },
-
-	{ stimulus: "<p class='GREEN'  >RED</p>",    is_html: true, data: { stimulus_type: "incongruent", correct_color: 'GREEN' }, timing_response: 5000 },
-	{ stimulus: "<p class='BLUE'   >RED</p>",   is_html: true, data: { stimulus_type: "incongruent", correct_color: 'BLUE' }, timing_response: 5000 },
-	{ stimulus: "<p class='YELLOW'   >RED</p>", is_html: true, data: { stimulus_type: "incongruent", correct_color: 'YELLOW' }, timing_response: 5000 },
-
-	{ stimulus: "<p class='GREEN'  >BLUE</p>",    is_html: true, data: { stimulus_type: "incongruent", correct_color: 'GREEN' }, timing_response: 5000 },
-	{ stimulus: "<p class='RED'   >BLUE</p>",   is_html: true, data: { stimulus_type: "incongruent", correct_color: 'RED' }, timing_response: 5000 },
-	{ stimulus: "<p class='YELLOW'   >BLUE</p>", is_html: true, data: { stimulus_type: "incongruent", correct_color: 'YELLOW' }, timing_response: 5000 },
-	
-	{ stimulus: "<p class='GREEN'  >YELLOW</p>",    is_html: true, data: { stimulus_type: "incongruent", correct_color: 'GREEN' }, timing_response: 5000 },
-	{ stimulus: "<p class='RED'   >YELLOW</p>",   is_html: true, data: { stimulus_type: "incongruent", correct_color: 'RED' }, timing_response: 5000 },
-	{ stimulus: "<p class='BLUE'   >YELLOW</p>", is_html: true, data: { stimulus_type: "incongruent", correct_color: 'BLUE' }, timing_response: 5000 }
+	{ w: 3, stimulus: "<p class='RED'   >MATH</p>", is_html: true, data: { stimulus_type: "neut", correct_color: 'RED' }, timing_response: 5000 },
+	{ w: 3, stimulus: "<p class='YELLOW'   >DIVIDE</p>", is_html: true, data: { stimulus_type: "neut", correct_color: 'YELLOW' }, timing_response: 5000 },
+	{ w: 3, stimulus: "<p class='GREEN'   >EQUAL</p>", is_html: true, data: { stimulus_type: "neut", correct_color: 'GREEN' }, timing_response: 5000 },
+	{ w: 3, stimulus: "<p class='BLUE'   >ADD</p>", is_html: true, data: { stimulus_type: "neut", correct_color: 'BLUE' }, timing_response: 5000 },
+	{ w: 3, stimulus: "<p class='GREEN'   >MATH</p>", is_html: true, data: { stimulus_type: "neut", correct_color: 'GREEN' }, timing_response: 5000 },
+	{ w: 3, stimulus: "<p class='BLUE'   >DIVIDE</p>", is_html: true, data: { stimulus_type: "neut", correct_color: 'BLUE' }, timing_response: 5000 },
+	{ w: 3, stimulus: "<p class='RED'   >EQUAL</p>", is_html: true, data: { stimulus_type: "neut", correct_color: 'RED' }, timing_response: 5000 },
+	{ w: 3, stimulus: "<p class='YELLOW'   >ADD</p>", is_html: true, data: { stimulus_type: "neut", correct_color: 'YELLOW' }, timing_response: 5000 },
+	{ w: 3, stimulus: "<p class='YELLOW'   >MATH</p>", is_html: true, data: { stimulus_type: "neut", correct_color: 'YELLOW' }, timing_response: 5000 },
+	{ w: 3, stimulus: "<p class='GREEN'   >DIVIDE</p>", is_html: true, data: { stimulus_type: "neut", correct_color: 'GREEN' }, timing_response: 5000 },
+	{ w: 3, stimulus: "<p class='BLUE'   >EQUAL</p>", is_html: true, data: { stimulus_type: "neut", correct_color: 'BLUE' }, timing_response: 5000 },
+	{ w: 3, stimulus: "<p class='RED'   >ADD</p>", is_html: true, data: { stimulus_type: "neut", correct_color: 'RED' }, timing_response: 5000 }
     ];
 
-    // show the same number of congruent and incongruent tasks, each incongruent tasks is displayed twice
-    var all_real_trials = jsPsych.randomization.repeat(real_stimuli, 2);
+    var all_uneq_trials = jsPsych.randomization.repeat( uneqlist, uneqlist.map(function(a) { return a.w; }) );
 
-    var real_block = {
+    // The second will show incongruent and neutral stimuli each twice
+    var equallist = uneqlist.map( function(a) { a.w = 2; return a; });
+    var all_equal_trials = jsPsych.randomization.repeat( equallist, equallist.map(function(a) { return a.w; }) );
+    
+    var block1 = {
     	type: 'button-response',
 	choices: ['red', 'yellow', 'green', 'blue'],
 	timing_post_trial: post_trial_gap,
-	timeline: all_real_trials,
+	timeline: all_uneq_trials,
 	on_finish: function(data) {
-		jsPsych.data.addDataToLastTrial({is_real_element: true});
+  	        jsPsych.data.addDataToLastTrial({is_real_element: true, list: "inc: 1 - neut: 3"});
 	    	var correct = false;
 	   	if(data.correct_color == 'RED' && data.button_pressed == 0){
 	      		correct = true;
@@ -512,7 +523,30 @@ function exportToCsv(filename, rows) {
 	}
     };
 
-    timeline.push( real_block );
+    timeline.push( block1 );
+
+    var block2 = {
+    	type: 'button-response',
+	choices: ['red', 'yellow', 'green', 'blue'],
+	timing_post_trial: post_trial_gap,
+	timeline: all_equal_trials,
+	on_finish: function(data) {
+	    jsPsych.data.addDataToLastTrial({is_real_element: true, list: "inc: 2 - neut: 2"});
+	    	var correct = false;
+	   	if(data.correct_color == 'RED' && data.button_pressed == 0){
+	      		correct = true;
+	   	} else if(data.correct_color == 'YELLOW' && data.button_pressed == 1){
+	      		correct = true;
+	  	} else if(data.correct_color == 'GREEN' && data.button_pressed == 2) {
+		        correct = true;
+		} else if(data.correct_color == 'BLUE' && data.button_pressed == 3) {
+		        correct = true;
+		}
+	   	jsPsych.data.addDataToLastTrial({correct: correct});
+	}
+    };
+
+    timeline.push( block2 );
 
     timeline.push( { type: 'text',
     		     text: function() {
