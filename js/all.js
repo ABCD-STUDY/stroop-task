@@ -130,7 +130,7 @@ jQuery(document).ready(function() {
 	jQuery('#session-participant-again').val(""); // clear the value from before
     });
 
-    jQuery('#open-lmt-button').click(function() {
+    jQuery('#open-stroop1-button').click(function() {
         // mark this one as started
 	jQuery.getJSON('code/php/events.php?action=mark&status=started&user_name='+user_name, function(data) {
 	    console.log(data);
@@ -138,6 +138,16 @@ jQuery(document).ready(function() {
 
 	// redirect to the task.php page
 	window.location = '/applications/stroop/task.php';
+    });
+    
+    jQuery('#open-stroop2-button').click(function() {
+        // mark this one as started
+	jQuery.getJSON('code/php/events.php?action=mark&status=started&user_name='+user_name, function(data) {
+	    console.log(data);
+	});
+
+	// redirect to the task.php page
+	window.location = '/applications/stroop/task-keyboard.php';
     });
     
     // 

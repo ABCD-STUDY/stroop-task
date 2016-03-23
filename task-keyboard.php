@@ -55,8 +55,7 @@
     <meta charset="utf-8" />
     <!-- Load jQuery -->
     <script src="js/jquery.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-    <script src="/js/jquery.ui.touch-punch.min.js"></script>
+    <!-- <script src="/js/jquery.ui.touch-punch.min.js"></script>     -->
     <script src='js/moment.min.js'></script>
    
     <!-- Load the jspsych library and plugins -->
@@ -158,10 +157,12 @@ a:hover { color: #ffffff }
 .date2 { color: #bbc3c8; background: #292929; display: inline-block; font-family: 'Georgia', serif; font-style: italic; font-size: 18px; line-height: 22px; margin: 0 0 20px 18px; padding: 10px 12px 8px; position: absolute; bottom: -36px; }
 
 .jspsych-btn {
-  margin-right: 0px;
+  margin-right: 30px;
   border-radius: 40px;
   width: 80px;
   height: 80px;
+  font-size: 32pt;
+  color: gray;
 }
 .red {
   background-color: red;
@@ -176,36 +177,20 @@ a:hover { color: #ffffff }
   background-color: blue;
 }
 #jspsych-button-response-button-0 {
-  position: absolute;
-  background-color: #292929;
-  color: #292929;
-  transform: rotate(0deg);
-  transform-origin: 150px 40px;
-  box-shadow: 0px 0px 8px #fff;
+  background-color: red;
+  color: red;
 }
 #jspsych-button-response-button-1 {
-  position: absolute;
-  background-color: #292929;
-  color: #292929;
-  transform: rotate(60deg);
-  transform-origin: 150px 40px;
-  box-shadow: 0px 0px 8px #fff;
+  background-color: yellow;
+  color: yellow;
 }
 #jspsych-button-response-button-2 {
-  position: absolute;
-  background-color: #292929;
-  color: #292929;
-  transform: rotate(120deg);
-  transform-origin: 150px 40px;
-  box-shadow: 0px 0px 8px #fff;
+  background-color: rgb(0,250,0);
+  color: rgb(0,250,0);
 }
 #jspsych-button-response-button-3 {
-  position: absolute;
-  background-color: #292929;
-  color: #292929;
-  transform: rotate(180deg);
-  transform-origin: 150px 40px;
-  box-shadow: 0px 0px 8px #fff;
+  background-color: blue;
+  color: blue;
 }
 
 </style>
@@ -230,7 +215,7 @@ function createStats( data ) {
     var totalCon = 0;
     var totalNeut = 0;
     for (var i = 0; i < data.length; i++) {
-	if (typeof data[i].is_real_element != 'undefined' && data[i].is_real_element == true && data[i].button_pressed != -1) {
+	if (typeof data[i].is_real_element != 'undefined' && data[i].is_real_element == true && data[i].key_press != -1) {
             if (data[i].stimulus_type == "inc") {
 		con.push(data[i].rt);
 		totalCon++;
@@ -251,7 +236,7 @@ function createStats( data ) {
     minneut = neut.reduce(function(a, b) { return (b < a)?b:a; });
     maxneut = neut.reduce(function(a, b) { return (b > a)?b:a; });
 
-    tmin = (mincon < minneut)?mincon:minneut;
+    tmin = (mincon < minneut)?mneut:minneut;
     tmax = (maxcon > maxneut)?maxcon:maxneut;					 
 			
     // we would like to get a histogram of reaction times (not the once that are -1)
@@ -425,30 +410,31 @@ function exportToCsv(filename, rows) {
     var all_test_trials = jsPsych.randomization.repeat(test_stimuli, maxtrial_nums); // we will cut the test short if 10 in a row are done correctly
 
     // Introduction
-    var start_instructions = "<div id='inst'><p><br/>In this task, you will press the button that matches the color of a word, while ignoring what the word says.<br/>The possible color responses are:<p>Red<span style='margin-right: 30px;'></span>Yellow<span style='margin-right: 30px;'></span>Green<span style='margin-right: 30px;'></span>Blue<br/>Press Enter when you are ready to begin.</p>";
+    var start_instructions = "<div id='inst'><p><br/>In this task, you will press the key that matches the color of a word, while ignoring what the word says.<br/>The possible color responses are:<p>Red<span style='margin-right: 30px;'></span>Yellow<span style='margin-right: 30px;'></span>Green<span style='margin-right: 30px;'></span>Blue<br/>Press Enter when you are ready to begin.</p>";
 			
     // Experiment Instructions
-    var instructions = "<div id='instructions'><p>To get you started, we will give you some practice with crosses.<br/>Your job is to press the button that matches the color of the crosses.<br/>The color that goes with each button is showing below<br/><br/><button class='jspsych-btn red'></button><button class='jspsych-btn yellow'></button><button class='jspsych-btn green'></button><button class='jspsych-btn blue'></button><br/><br/>Hit Enter to Begin</p>";
+    var instructions = "<div id='instructions'><p>To get you started, we will give you some practice with crosses.<br/>Your job is to press the key that matches the color of the crosses.<br/>The color that goes with each key is showing below<br/><br/><button class='jspsych-btn red'>1</button><button class='jspsych-btn yellow'>4</button><button class='jspsych-btn green'>7</button><button class='jspsych-btn blue'>0</button><br/><br/>Hit Enter to Begin</p>";
 
     var startreal = "<div id='instructions'><p><br/>You are finished with the practice trials.<br/><br/>Now you will begin the task.<br/><br/>Remember, you should base your response of the color of the ink in which the word is printed, while ignoring the meaning of the printed word.<br/><br/>From left to right, the responses are Red, Yellow, Green, Blue.<br/><br/>Hit Enter when you are ready to begin.</p></div>";
 
     var memCorrectInARow = 0;
-    var numColorTested = 0;
+    var numColorTested = 0;			
     var test_block = {
-    	type: 'button-response',
-	choices: ['red', 'yellow', 'green', 'blue'],
+    	type: 'single-stim',
+	choices: ['1', '4', '7', '0'],
 	timing_post_trial: post_trial_gap,
 	timeline: all_test_trials,
 	on_finish: function(data) {
 		jsPsych.data.addDataToLastTrial({is_real_element: false});
 	    	var correct = false;
-	   	if(data.stimulus_type == 'red' && data.button_pressed == 0){
+	        //alert('keypress: ' + data.key_press + " which: " + Object.keys(data));
+	   	if (data.stimulus_type == 'red' && data.key_press == 49){
 	      		correct = true;
-	   	} else if(data.stimulus_type == 'yellow' && data.button_pressed == 1){
+	   	} else if(data.stimulus_type == 'yellow' && data.key_press == 52){
 	      		correct = true;
-	  	} else if(data.stimulus_type == 'green' && data.button_pressed == 2) {
+	  	} else if(data.stimulus_type == 'green' && data.key_press == 55) {
 		        correct = true;
-		} else if(data.stimulus_type == 'blue' && data.button_pressed == 3) {
+		} else if(data.stimulus_type == 'blue' && data.key_press == 48) {
 		        correct = true;
 		}
                 if (correct) {
@@ -457,22 +443,19 @@ function exportToCsv(filename, rows) {
 		    memCorrectInARow = 0;
 		}
 	   	jsPsych.data.addDataToLastTrial({correct: correct});
-                if (memCorrectInARow > 9) 
-	  	   jsPsych.endCurrentTimeline("You entered " + (memCorrectInARow+1 ) + " in a row correctly, lets continue.");
+                if (memCorrectInARow > 9)
+	  	    jsPsych.endCurrentTimeline("You entered " + (memCorrectInARow+1 ) + " in a row correctly, lets continue.");
 	        numColorTested++;
 	        if (numColorTested > (maxtrial_nums * 4)-1)
 		  jsPsych.endTimeline("Giving up, not enought correct trials done");
 	}
     };
 
-    // for a touch screen we do not have an enter button
-    jQuery('body').on('touchstart', function() { jQuery('#inst').click(); jQuery('#instructions').click(); });
-			
     var timeline = [];
-    timeline.push( { type: 'text', cont_key: 'mouse', text: start_instructions } );
-    timeline.push( { type: 'text', cont_key: 'mouse', text: instructions } );
+    timeline.push( { type: 'text', text: start_instructions } );
+    timeline.push( { type: 'text', text: instructions } );
     timeline.push( test_block ); // add the test block (variable length, needs <N> correct answers)
-    timeline.push( { type: 'text', cont_key: 'mouse', text: startreal } );
+    timeline.push( { type: 'text', text: startreal } );
 
     // we want to run two experiments, the first will show all incongruent stimuli once and all neutral stimuli 3 times
     var uneqlist = [
@@ -510,20 +493,20 @@ function exportToCsv(filename, rows) {
     var all_equal_trials = jsPsych.randomization.repeat( equallist, equallist.map(function(a) { return a.w; }) );
     
     var block1 = {
-    	type: 'button-response',
-	choices: ['red', 'yellow', 'green', 'blue'],
+    	type: 'single-stim',
+	choices: ['1', '4', '7', '0'],
 	timing_post_trial: post_trial_gap,
 	timeline: all_uneq_trials,
 	on_finish: function(data) {
   	        jsPsych.data.addDataToLastTrial({is_real_element: true, list: "inc: 1 - neut: 3"});
 	    	var correct = false;
-	   	if(data.correct_color == 'RED' && data.button_pressed == 0){
+	   	if(data.correct_color == 'RED' && data.key_press == 49){
 	      		correct = true;
-	   	} else if(data.correct_color == 'YELLOW' && data.button_pressed == 1){
+	   	} else if(data.correct_color == 'YELLOW' && data.key_press == 52){
 	      		correct = true;
-	  	} else if(data.correct_color == 'GREEN' && data.button_pressed == 2) {
+	  	} else if(data.correct_color == 'GREEN' && data.key_press == 55) {
 		        correct = true;
-		} else if(data.correct_color == 'BLUE' && data.button_pressed == 3) {
+		} else if(data.correct_color == 'BLUE' && data.key_press == 48) {
 		        correct = true;
 		}
 	   	jsPsych.data.addDataToLastTrial({correct: correct});
@@ -533,20 +516,20 @@ function exportToCsv(filename, rows) {
     timeline.push( block1 );
 
     var block2 = {
-    	type: 'button-response',
-	choices: ['red', 'yellow', 'green', 'blue'],
+    	type: 'single-stim',
+	choices: ['1', '4', '7', '0'],
 	timing_post_trial: post_trial_gap,
 	timeline: all_equal_trials,
 	on_finish: function(data) {
 	    jsPsych.data.addDataToLastTrial({is_real_element: true, list: "inc: 2 - neut: 2"});
 	    	var correct = false;
-	   	if(data.correct_color == 'RED' && data.button_pressed == 0){
+	   	if(data.correct_color == 'RED' && data.key_press == 49){
 	      		correct = true;
-	   	} else if(data.correct_color == 'YELLOW' && data.button_pressed == 1){
+	   	} else if(data.correct_color == 'YELLOW' && data.key_press == 52){
 	      		correct = true;
-	  	} else if(data.correct_color == 'GREEN' && data.button_pressed == 2) {
+	  	} else if(data.correct_color == 'GREEN' && data.key_press == 55) {
 		        correct = true;
-		} else if(data.correct_color == 'BLUE' && data.button_pressed == 3) {
+		} else if(data.correct_color == 'BLUE' && data.key_press == 48) {
 		        correct = true;
 		}
 	   	jsPsych.data.addDataToLastTrial({correct: correct});
@@ -556,7 +539,6 @@ function exportToCsv(filename, rows) {
     timeline.push( block2 );
 
     timeline.push( { type: 'text',
-	  	     cont_key: 'mouse',
     		     text: function() {
    			return createStats( jsPsych.data.getData() );
 		   }

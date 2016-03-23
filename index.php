@@ -221,7 +221,8 @@
           <div class="col-lg-12">
             <div class="modal-body">
               <div>
-                <button id="open-lmt-button" type="button" class="btn btn-success" data-dismiss="modal"><i class="fa fa-save"></i> Start Stroop-Task</button> &nbsp;
+                <button id="open-stroop1-button" type="button" class="btn btn-success" data-dismiss="modal"><i class="fa fa-save"></i> Start Stroop-Task (touch)</button> &nbsp;
+                <button id="open-stroop2-button" type="button" class="btn btn-success" data-dismiss="modal"><i class="fa fa-save"></i> Start Stroop-Task (keyboard)</button> &nbsp;
                 <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Back</button>&nbsp;
               </div>
             </div><!-- /.modal-body -->
