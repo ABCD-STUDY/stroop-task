@@ -32,12 +32,12 @@
    $subjid = "";
    $sessionid = "";
    $active_substances = array();
-   if ( isset($_SESSION['ABCD']) && isset($_SESSION['ABCD']['timeline-followback']) ) {
-      if (isset($_SESSION['ABCD']['timeline-followback']['subjid'])) {  
-         $subjid  = $_SESSION['ABCD']['timeline-followback']['subjid'];
+   if ( isset($_SESSION['ABCD']) && isset($_SESSION['ABCD']['stroop']) ) {
+      if (isset($_SESSION['ABCD']['stroop']['subjid'])) {  
+         $subjid  = $_SESSION['ABCD']['stroop']['subjid'];
       }
-      if (isset($_SESSION['ABCD']['timeline-followback']['sessionid'])) {
-         $sessionid  = $_SESSION['ABCD']['timeline-followback']['sessionid'];
+      if (isset($_SESSION['ABCD']['stroop']['sessionid'])) {
+         $sessionid  = $_SESSION['ABCD']['stroop']['sessionid'];
       }      
    }
    if ($subjid == "") {
@@ -50,7 +50,7 @@
    }
 
   // this event will be saved at this location
-  $events_file = $_SERVER['DOCUMENT_ROOT']."/applications/little-man-task/data/" . $site . "/lmt_".$subjid."_".$sessionid.".json";
+  $events_file = $_SERVER['DOCUMENT_ROOT']."/applications/stroop/data/" . $site . "/lmt_".$subjid."_".$sessionid.".json";
 
   if (file_exists($events_file)) {
      echo(json_encode ( array( "message" => "Error: this session already exists, overwrite session is not possible" ) ) );
