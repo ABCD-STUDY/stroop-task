@@ -559,6 +559,9 @@ function exportToCsv(filename, rows) {
 
     timeline.push( block2 );
 
+
+    //separating text barrier slide at end of code
+    timeline.push( { type: 'text', cont_key: 'mouse', text: "<p>Thank you for participating!</p>" } );
     timeline.push( { type: 'text',
 	  	     cont_key: 'mouse',
     		     text: function() {
