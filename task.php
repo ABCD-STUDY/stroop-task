@@ -197,8 +197,8 @@ a:hover { color: #ffffff }
 }
 #jspsych-button-response-button-2 {
   position: absolute;
-  background-color: green;
-  color: green;
+  background-color:  rgb(0,250,0);
+  color:  rgb(0,250,0);
   transform: rotate(120deg);
   transform-origin: 150px 40px;
   box-shadow: 0px 0px 8px #fff;
