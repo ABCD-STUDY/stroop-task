@@ -181,32 +181,32 @@ a:hover { color: #ffffff }
 }
 #jspsych-button-response-button-0 {
   position: absolute;
-  background-color: #292929;
-  color: #292929;
+  background-color: red;
+  color: red;
   transform: rotate(0deg);
   transform-origin: 100px 40px;
   box-shadow: 0px 0px 8px #fff;
 }
 #jspsych-button-response-button-1 {
   position: absolute;
-  background-color: #292929;
-  color: #292929;
+  background-color: yellow;
+  color: yellow;
   transform: rotate(60deg);
   transform-origin: 150px 40px;
   box-shadow: 0px 0px 8px #fff;
 }
 #jspsych-button-response-button-2 {
   position: absolute;
-  background-color: #292929;
-  color: #292929;
+  background-color: green;
+  color: green;
   transform: rotate(120deg);
   transform-origin: 150px 40px;
   box-shadow: 0px 0px 8px #fff;
 }
 #jspsych-button-response-button-3 {
   position: absolute;
-  background-color: #292929;
-  color: #292929;
+  background-color: blue;
+  color: blue;
   transform: rotate(180deg);
   transform-origin: 150px 40px;
   box-shadow: 0px 0px 8px #fff;
