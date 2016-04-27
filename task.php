@@ -78,7 +78,7 @@ body {
 .RED {
    color: red;
    text-align: center;
-   font-size: 32pt;
+   font-size: 72pt;
    vertical-align: middle;
    line-height: 400px;
    font-weight: 900;
@@ -86,7 +86,7 @@ body {
 .GREEN {
    color: rgb(0,250,0);
    text-align: center;
-   font-size: 32pt;
+   font-size: 72pt;
    vertical-align: middle;
    line-height: 400px;
    font-weight: 900;
@@ -94,7 +94,7 @@ body {
 .BLUE {
    color: blue;
    text-align: center;
-   font-size: 32pt;
+   font-size: 72pt;
    vertical-align: middle;
    line-height: 400px;
    font-weight: 900;
@@ -102,7 +102,7 @@ body {
 .YELLOW {
    color: yellow;
    text-align: center;
-   font-size: 32pt;
+   font-size: 72pt;
    vertical-align: middle;
    line-height: 400px;
    font-weight: 900;
@@ -110,7 +110,7 @@ body {
 h1 {
    color: #ffffff;
    font-family: 'Lato', sans-serif;
-   font-size: 54px;
+   font-size: px;
    font-weight: 300;
    line-height: 58px;
    margin: 0 0 58px;
