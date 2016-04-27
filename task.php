@@ -110,9 +110,9 @@ body {
 h1 {
    color: #ffffff;
    font-family: 'Lato', sans-serif;
-   font-size: px;
+   font-size: 72px;
    font-weight: 300;
-   line-height: 58px;
+   line-height: 72px;
    margin: 0 0 58px;
    border-bottom: double #555;
    padding-bottom: 30px;
@@ -129,9 +129,9 @@ h2 {
 p {
    color: #adb7bd;
    font-family: 'Open Sans', Arial, sans-serif;
-   font-size: 16px;
-   line-height: 26px;
-   text-indent: 30px;
+   font-size: 36px;
+   line-height: 48px;
+   text-indent: 48px;
    margin: 0;
 }
 
