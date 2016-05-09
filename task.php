@@ -170,10 +170,9 @@ a:hover { color: #ffffff }
   border-radius: 40px;
   width: 80px;
   height: 80px;
+  position: absolute;
+  bottom: 40px;
 
-// THIS LINE FOR PORTRAIT MODE POSITIONING 
-  position: relative;
-  margin-top: 60%;
 }
 .red {
   background-color: red;
@@ -191,32 +190,28 @@ a:hover { color: #ffffff }
   position: absolute;
   background-color: red;
   color: red;
-  transform: rotate(0deg);
-  transform-origin: 100px 40px;
+  left: 15%;
   box-shadow: 0px 0px 8px #fff;
 }
 #jspsych-button-response-button-1 {
   position: absolute;
   background-color: yellow;
   color: yellow;
-  transform: rotate(60deg);
-  transform-origin: 150px 40px;
+  left: 36%;
   box-shadow: 0px 0px 8px #fff;
 }
 #jspsych-button-response-button-2 {
   position: absolute;
   background-color:  rgb(0,250,0);
   color:  rgb(0,250,0);
-  transform: rotate(120deg);
-  transform-origin: 150px 40px;
+  right: 36%;
   box-shadow: 0px 0px 8px #fff;
 }
 #jspsych-button-response-button-3 {
   position: absolute;
   background-color: blue;
   color: blue;
-  transform: rotate(180deg);
-  transform-origin: 150px 40px;
+  right: 15%;
   box-shadow: 0px 0px 8px #fff;
 }
 
