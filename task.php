@@ -107,6 +107,14 @@ body {
    line-height: 400px;
    font-weight: 900;
 }
+.GRAY {
+   color: gray;
+   text-align: center;
+   font-size: 72pt;
+   vertical-align: middle;
+   line-height: 400px;
+   font-weight: 900;
+}
 h1 {
    color: #ffffff;
    font-family: 'Lato', sans-serif;
@@ -421,13 +429,34 @@ function exportToCsv(filename, rows) {
 	{ stimulus: "<p class='YELLOW'   >XXXXXXXX</p>", is_html: true, data: { stimulus_type: "yellow", correct_color: 'YELLOW' }, timing_response: 5000 }
     ];
 
+    // this trial is for correct/incorrect feedback in example trials
+    var test_trial_feedback = { 
+	is_html: true,
+	stimulus: function() { 
+		var lasttrialdata = jsPsych.data.getLastTrialData();
+		if(lasttrialdata.rt == -1){
+			return "<p class='GRAY'>Time Ran Out</p>";
+		}
+		if(lasttrialdata.correct == true){
+			return "<p class='GRAY'>Correct</p>";
+		}
+		else{
+			return "<p class='GRAY'>Wrong</p>";
+		}
+        }
+    
+    }
     // training length depends on the answers provided by the user, only if <N> correct answers have been provided in a row
     // we quit the test
 
     // training is long (20 is 20*4 stimulus presentations), test is short
     var maxtrial_nums = 20;
     var all_test_trials = jsPsych.randomization.repeat(test_stimuli, maxtrial_nums); // we will cut the test short if 10 in a row are done correctly
-
+    var test_trials = [];
+    for(var i = 0; i < maxtrial_nums; i++){
+	test_trials.push(all_test_trials[i]);
+	test_trials.push(test_trial_feedback);
+    }
     // Introduction
     var start_instructions = "<div id='inst'><p><br/>In this task, you will press the button that matches the color of a word, while ignoring what the word says.<br/>The possible color responses are:<p>Red<span style='margin-right: 30px;'></span>Yellow<span style='margin-right: 30px;'></span>Green<span style='margin-right: 30px;'></span>Blue<br/>Press here when you are ready to begin.</p>";
 			
@@ -441,31 +470,33 @@ function exportToCsv(filename, rows) {
     var test_block = {
     	type: 'button-response',
 	choices: ['red', 'yellow', 'green', 'blue'],
-	timing_post_trial: post_trial_gap,
-	timeline: all_test_trials,
+	timing_post_trial: test_trials,
+	timeline: test_trials,
 	on_finish: function(data) {
 		jsPsych.data.addDataToLastTrial({is_real_element: false});
-	    	var correct = false;
-	   	if(data.stimulus_type == 'red' && data.button_pressed == 0){
-	      		correct = true;
-	   	} else if(data.stimulus_type == 'yellow' && data.button_pressed == 1){
-	      		correct = true;
-	  	} else if(data.stimulus_type == 'green' && data.button_pressed == 2) {
-		        correct = true;
-		} else if(data.stimulus_type == 'blue' && data.button_pressed == 3) {
-		        correct = true;
+		if(data.stimulus_type == "red" || data.stimulus_type == "blue" || data.stimulus_type == "green" || data.stimulus_type == "yellow"){
+			var correct = false;
+			if(data.stimulus_type == 'red' && data.button_pressed == 0){
+				correct = true;
+			} else if(data.stimulus_type == 'yellow' && data.button_pressed == 1){
+				correct = true;
+			} else if(data.stimulus_type == 'green' && data.button_pressed == 2) {
+				correct = true;
+			} else if(data.stimulus_type == 'blue' && data.button_pressed == 3) {
+				correct = true;
+			}
+			if (correct) {
+			    memCorrectInARow++;
+			} else {
+			    memCorrectInARow = 0;
+			}
+			jsPsych.data.addDataToLastTrial({correct: correct});
+			if (memCorrectInARow > 9) 
+			   jsPsych.endCurrentTimeline("You entered " + (memCorrectInARow+1 ) + " in a row correctly, lets continue.");
+			numColorTested++;
+			if (numColorTested > (maxtrial_nums * 4)-1)
+				jsPsych.endTimeline("Giving up, not enought correct trials done");
 		}
-                if (correct) {
-                    memCorrectInARow++;
-	        } else {
-		    memCorrectInARow = 0;
-		}
-	   	jsPsych.data.addDataToLastTrial({correct: correct});
-                if (memCorrectInARow > 9) 
-	  	   jsPsych.endCurrentTimeline("You entered " + (memCorrectInARow+1 ) + " in a row correctly, lets continue.");
-	        numColorTested++;
-	        if (numColorTested > (maxtrial_nums * 4)-1)
-		  jsPsych.endTimeline("Giving up, not enought correct trials done");
 	}
     };
 
