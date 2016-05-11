@@ -148,7 +148,7 @@ a {
    text-decoration: underline;
 }
 
-a:hover { color: #ffffff }
+a:hover { color: #292929; }
 .date {
       background: #fe921f;
       color: #ffffff;
@@ -164,55 +164,58 @@ a:hover { color: #ffffff }
 }
 
 .date2 { color: #bbc3c8; background: #292929; display: inline-block; font-family: 'Georgia', serif; font-style: italic; font-size: 18px; line-height: 22px; margin: 0 0 20px 18px; padding: 10px 12px 8px; position: absolute; bottom: -36px; }
-
 .jspsych-btn {
+  border: 1px solid #292929;
   margin-right: 0px;
-  border-radius: 40px;
-  width: 80px;
-  height: 80px;
+  border-radius: 80px;
+  width: 160px;
+  height: 160px;
   position: absolute;
   bottom: 40px;
-
+  background-color:#292929;
+}
+.jspsych-btn:hover {
+  background-color: #292929;
+  border: 1px solid #292929;
 }
 .red {
-  background-color: red;
+  color: red;
 }
 .yellow {
-  background-color: yellow;
+  color: yellow;
 }
 .green {
-  background-color: rgb(0,250,0);
+  color: rgb(0,250,0);
 }
 .blue {
-  background-color: blue;
+ color: blue;
+}
+.inner_circle {
+  height: 80px;
+  width: 80px;
+  border-radius: 40px;
+  border: 1px solid white;
+  box-shadow: 0px 0px 5px white;
 }
 #jspsych-button-response-button-0 {
   position: absolute;
-  background-color: red;
   color: red;
-  left: 15%;
-  box-shadow: 0px 0px 8px #fff;
+  left: 10%;
 }
 #jspsych-button-response-button-1 {
   position: absolute;
-  background-color: yellow;
   color: yellow;
-  left: 36%;
-  box-shadow: 0px 0px 8px #fff;
+  left: 30%;
 }
 #jspsych-button-response-button-2 {
   position: absolute;
-  background-color:  rgb(0,250,0);
   color:  rgb(0,250,0);
-  right: 36%;
-  box-shadow: 0px 0px 8px #fff;
+  right: 30%;
 }
 #jspsych-button-response-button-3 {
   position: absolute;
-  background-color: blue;
   color: blue;
-  right: 15%;
-  box-shadow: 0px 0px 8px #fff;
+  right: 10%;
 }
 
 </style>
@@ -464,7 +467,10 @@ function exportToCsv(filename, rows) {
     var numColorTested = 0;
     var test_block = {
     	type: 'button-response',
-	choices: ['red', 'yellow', 'green', 'blue'],
+	choices: ['<center><div class="inner_circle"><div style="padding-top: 30px;">R</div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 30px;">Y</div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 30px;">G</div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 30px;">B</div></div></center>'],
 	timing_post_trial: test_trials,
 	timeline: test_trials,
 	on_finish: function(data) {

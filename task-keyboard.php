@@ -192,6 +192,22 @@ a:hover { color: #ffffff }
   background-color: blue;
   color: blue;
 }
+    .correct {
+      color: gray;
+      text-align: center;
+      font-size: 32pt;
+      vertical-align: middle;
+      line-height: 400px;
+      font-weight: 600;
+    }
+    .wrong {
+      color: gray;
+      text-align: center;
+      font-size: 32pt;
+      vertical-align: middle;
+      line-height: 400px;
+      font-weight: 600;
+    }
 
 </style>
 
@@ -236,7 +252,7 @@ function createStats( data ) {
     minneut = neut.reduce(function(a, b) { return (b < a)?b:a; });
     maxneut = neut.reduce(function(a, b) { return (b > a)?b:a; });
 
-    tmin = (mincon < minneut)?mneut:minneut;
+    tmin = (mincon < minneut)?minneut:minneut;
     tmax = (maxcon > maxneut)?maxcon:maxneut;					 
 			
     // we would like to get a histogram of reaction times (not the once that are -1)
@@ -389,8 +405,6 @@ function exportToCsv(filename, rows) {
     }
 }
 
-
-
     var post_trial_gap = function() {
         return Math.floor( Math.random() * 1000 ) + 500;
     }
@@ -409,6 +423,52 @@ function exportToCsv(filename, rows) {
     var maxtrial_nums = 20;
     var all_test_trials = jsPsych.randomization.repeat(test_stimuli, maxtrial_nums); // we will cut the test short if 10 in a row are done correctly
 
+    var Correct = {
+	type: 'single-stim',
+	timeline: [{
+	    type: 'text',
+	    text: '<div class=\"correct\">correct</div>',	     
+	    on_finish: function(data){
+		jsPsych.data.addDataToLastTrial({is_data_element: false});
+		jsPsych.data.addDataToLastTrial({skipped:true});
+	    },
+	}],
+	conditional_function: function(){
+		var data = jsPsych.data.getLastTrialData();
+		if (data.correct == false){
+		  return false;
+		} else {
+		  return true;
+		}
+	}
+    }
+        
+    var Wrong = {
+	type: 'single-stim',
+	timeline: [{
+	    type: 'text',
+	    text: '<div class=\"wrong\">wrong</div>',
+	    data: { is_data_element: false},
+	}],
+	conditional_function: function(){
+		var data = jsPsych.data.getLastTrialData();
+		if (data.skipped == true){
+		  return false;
+		} else {
+		  return true;
+		}
+	}
+
+    }
+
+    // we would like to add WRONG + CORRECT pages dependent on the users input
+    var all_test_trials_with_correct = [];
+    for ( var i = 0; i < all_test_trials.length; i++ ) {
+	all_test_trials_with_correct.push(all_test_trials[i]);
+	all_test_trials_with_correct.push(Correct);
+	all_test_trials_with_correct.push(Wrong);
+    }
+			
     // Introduction
     var start_instructions = "<div id='inst'><p><br/>In this task, you will press the key that matches the color of a word, while ignoring what the word says.<br/>The possible color responses are:<p>Red<span style='margin-right: 30px;'></span>Yellow<span style='margin-right: 30px;'></span>Green<span style='margin-right: 30px;'></span>Blue<br/>Press Enter when you are ready to begin.</p>";
 			
@@ -422,8 +482,8 @@ function exportToCsv(filename, rows) {
     var test_block = {
     	type: 'single-stim',
 	choices: ['1', '4', '7', '0'],
-	timing_post_trial: post_trial_gap,
-	timeline: all_test_trials,
+	timing_post_trial: 200,
+	timeline: all_test_trials_with_correct,
 	on_finish: function(data) {
 		jsPsych.data.addDataToLastTrial({is_real_element: false});
 	    	var correct = false;
