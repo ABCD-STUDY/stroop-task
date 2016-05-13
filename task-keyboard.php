@@ -77,31 +77,39 @@ body {
 .RED {
    color: red;
    text-align: center;
-   font-size: 32pt;
+   font-size: 72pt;
    vertical-align: middle;
-   line-height: 400px;
+   line-height: 200px;
    font-weight: 900;
 }
 .GREEN {
    color: rgb(0,250,0);
    text-align: center;
-   font-size: 32pt;
+   font-size: 72pt;
    vertical-align: middle;
-   line-height: 400px;
+   line-height: 200px;
    font-weight: 900;
 }
 .BLUE {
    color: blue;
    text-align: center;
-   font-size: 32pt;
+   font-size: 72pt;
    vertical-align: middle;
-   line-height: 400px;
+   line-height: 200px;
    font-weight: 900;
 }
 .YELLOW {
    color: yellow;
    text-align: center;
-   font-size: 32pt;
+   font-size: 72pt;
+   vertical-align: middle;
+   line-height: 200px;
+   font-weight: 900;
+}
+.GRAY {
+   color: gray;
+   text-align: center;
+   font-size: 72pt;
    vertical-align: middle;
    line-height: 400px;
    font-weight: 900;
@@ -423,7 +431,7 @@ function exportToCsv(filename, rows) {
     var maxtrial_nums = 20;
     var all_test_trials = jsPsych.randomization.repeat(test_stimuli, maxtrial_nums); // we will cut the test short if 10 in a row are done correctly
 
-    var Correct = {
+   /* var Correct = {
 	type: 'single-stim',
 	timeline: [{
 	    type: 'text',
@@ -468,7 +476,31 @@ function exportToCsv(filename, rows) {
 	all_test_trials_with_correct.push(Correct);
 	all_test_trials_with_correct.push(Wrong);
     }
-			
+			*/
+  // this trial is for correct/incorrect feedback in example trials
+  var feedback = { 
+    is_html: true,
+    timing_response: 3000,
+    timing_post_trial: 500,
+    stimulus: function() { 
+      var lasttrialdata = jsPsych.data.getLastTrialData();
+      if(lasttrialdata.rt == -1){
+        return lasttrialdata.stimulus + "<p class='GRAY'>Time Ran Out</p>";
+      }
+      if(lasttrialdata.correct == true){
+        return lasttrialdata.stimulus + "<p class='GRAY'>Correct</p>";
+      }
+      else{
+        return lasttrialdata.stimulus + "<p class='GRAY'>Wrong</p>";
+      }
+    }
+  }
+
+    var all_test_trials_with_correct = [];
+    for ( var i = 0; i < all_test_trials.length; i++ ) {
+      all_test_trials_with_correct.push(all_test_trials[i]);
+      all_test_trials_with_correct.push(feedback);
+    }
     // Introduction
     var start_instructions = "<div id='inst'><p><br/>In this task, you will press the key that matches the color of a word, while ignoring what the word says.<br/>The possible color responses are:<p>Red<span style='margin-right: 30px;'></span>Yellow<span style='margin-right: 30px;'></span>Green<span style='margin-right: 30px;'></span>Blue<br/>Press Enter when you are ready to begin.</p>";
 			
@@ -482,10 +514,11 @@ function exportToCsv(filename, rows) {
     var test_block = {
     	type: 'single-stim',
 	choices: ['1', '4', '7', '0'],
-	timing_post_trial: 200,
+	timing_post_trial: 0,
 	timeline: all_test_trials_with_correct,
 	on_finish: function(data) {
 		jsPsych.data.addDataToLastTrial({is_real_element: false});
+    if(data.stimulus_type == "red" || data.stimulus_type == "blue" || data.stimulus_type == "green" || data.stimulus_type == "yellow"){
 	    	var correct = false;
 	        //alert('keypress: ' + data.key_press + " which: " + Object.keys(data));
 	   	if (data.stimulus_type == 'red' && data.key_press == 49){
@@ -509,6 +542,7 @@ function exportToCsv(filename, rows) {
 	        if (numColorTested > (maxtrial_nums * 4)-1)
 		  jsPsych.endTimeline("Giving up, not enought correct trials done");
 	}
+  }
     };
 
     var timeline = [];

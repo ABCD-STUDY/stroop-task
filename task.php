@@ -428,24 +428,24 @@ function exportToCsv(filename, rows) {
 	{ stimulus: "<p class='YELLOW'   >XXXXXXXX</p>", is_html: true, data: { stimulus_type: "yellow", correct_color: 'YELLOW' }, timing_response: 5000 }
     ];
 
-    // this trial is for correct/incorrect feedback in example trials
-    var test_trial_feedback = { 
-	is_html: true,
-  timing_response: 3000,
-	stimulus: function() { 
-		var lasttrialdata = jsPsych.data.getLastTrialData();
-		if(lasttrialdata.rt == -1){
-			return "<p class='GRAY'>Time Ran Out</p>";
-		}
-		if(lasttrialdata.correct == true){
-			return "<p class='GRAY'>Correct</p>";
-		}
-		else{
-			return "<p class='GRAY'>Wrong</p>";
-		}
-        }
-    
+  // this trial is for correct/incorrect feedback in example trials
+  var test_trial_feedback = { 
+	  is_html: true,
+    timing_response: 3000,
+    timing_post_trial: 500,
+	  stimulus: function() { 
+		  var lasttrialdata = jsPsych.data.getLastTrialData();
+	 	  if(lasttrialdata.rt == -1){
+			  return lasttrialdata.stimulus + "<p class='GRAY'>Time Ran Out</p>";
+		  }
+		  if(lasttrialdata.correct == true){
+			  return lasttrialdata.stimulus + "<p class='GRAY'>Correct</p>";
+		  }
+		  else{
+			  return lasttrialdata.stimulus + "<p class='GRAY'>Wrong</p>";
+		  }
     }
+  }
     // training length depends on the answers provided by the user, only if <N> correct answers have been provided in a row
     // we quit the test
 
