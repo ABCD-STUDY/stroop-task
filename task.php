@@ -134,6 +134,7 @@ h2 {
    margin: 0 0 48px;
    padding-bottom: 30px;
 }
+
 p {
    color: #adb7bd;
    font-family: 'Open Sans', Arial, sans-serif;
@@ -205,12 +206,12 @@ a:hover { color: #292929; }
 #jspsych-button-response-button-1 {
   position: absolute;
   color: yellow;
-  left: 30%;
+  left: 31%;
 }
 #jspsych-button-response-button-2 {
   position: absolute;
   color:  rgb(0,250,0);
-  right: 30%;
+  right: 31%;
 }
 #jspsych-button-response-button-3 {
   position: absolute;
@@ -430,6 +431,7 @@ function exportToCsv(filename, rows) {
     // this trial is for correct/incorrect feedback in example trials
     var test_trial_feedback = { 
 	is_html: true,
+  timing_response: 3000,
 	stimulus: function() { 
 		var lasttrialdata = jsPsych.data.getLastTrialData();
 		if(lasttrialdata.rt == -1){
@@ -459,7 +461,12 @@ function exportToCsv(filename, rows) {
     var start_instructions = "<div id='inst'><p><br/>In this task, you will press the button that matches the color of a word, while ignoring what the word says.<br/>The possible color responses are:<p>Red<span style='margin-right: 30px;'></span>Yellow<span style='margin-right: 30px;'></span>Green<span style='margin-right: 30px;'></span>Blue<br/>Press here when you are ready to begin.</p>";
 			
     // Experiment Instructions
-    var instructions = "<div id='instructions'><p>To get you started, we will give you some practice with crosses.<br/>Your job is to press the button that matches the color of the crosses.<br/>The color that goes with each button is showing below<br/><br/><button class='jspsych-btn red'></button><button class='jspsych-btn yellow'></button><button class='jspsych-btn green'></button><button class='jspsych-btn blue'></button><br/><br/>Press here to Begin</p>";
+    var instructions = "<div id='instructions'><p>To get you started, we will give you some practice with crosses.<br/>Your job is to press the button that matches the color of the crosses.<br/>The color that goes with each button is showing below<br/><br/></div>"+
+    "<div><div class= 'inner_circle'><center><div style='padding-top: 20px; color: red; font-size: 36px; font-weight: bold;'>R</div></center></div>"+
+    "<div class= 'inner_circle'><center><div style='padding-top: 20px; color: yellow; font-size: 36px; font-weight: bold;'>Y</div></center></div>"+
+    "<div class= 'inner_circle'><center><div style='padding-top: 20px; color: rgb(0,255,0); font-size: 36px; font-weight: bold;'>G</div></center></div>"+
+    "<div class= 'inner_circle'><center><div style='padding-top: 20px; color: blue; font-size: 36px; font-weight: bold;'>B</div></center></div></div>"+
+    "<div id='instructions'><br/><br/><p>Press here to Begin</p></div>";
 
     var startreal = "<div id='instructions'><p><br/>You are finished with the practice trials.<br/><br/>Now you will begin the task.<br/><br/>Remember, you should base your response of the color of the ink in which the word is printed, while ignoring the meaning of the printed word.<br/><br/>From left to right, the responses are Red, Yellow, Green, Blue.<br/><br/>Press here when you are ready to begin.</p></div>";
 
@@ -467,10 +474,10 @@ function exportToCsv(filename, rows) {
     var numColorTested = 0;
     var test_block = {
     	type: 'button-response',
-	choices: ['<center><div class="inner_circle"><div style="padding-top: 30px;">R</div></div></center>',
-'<center><div class="inner_circle"><div style="padding-top: 30px;">Y</div></div></center>',
-'<center><div class="inner_circle"><div style="padding-top: 30px;">G</div></div></center>',
-'<center><div class="inner_circle"><div style="padding-top: 30px;">B</div></div></center>'],
+	choices: ['<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">R</div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">Y</div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">G</div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">B</div></div></center>'],
 	timing_post_trial: test_trials,
 	timeline: test_trials,
 	on_finish: function(data) {
@@ -547,7 +554,10 @@ function exportToCsv(filename, rows) {
     
     var block1 = {
     	type: 'button-response',
-	choices: ['red', 'yellow', 'green', 'blue'],
+  choices: ['<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">R</div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">Y</div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">G</div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">B</div></div></center>'],
 	timing_post_trial: post_trial_gap,
 	timeline: all_uneq_trials,
 	on_finish: function(data) {
@@ -570,7 +580,10 @@ function exportToCsv(filename, rows) {
 
     var block2 = {
     	type: 'button-response',
-	choices: ['red', 'yellow', 'green', 'blue'],
+  choices: ['<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">R</div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">Y</div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">G</div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">B</div></div></center>'],
 	timing_post_trial: post_trial_gap,
 	timeline: all_equal_trials,
 	on_finish: function(data) {
