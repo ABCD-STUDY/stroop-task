@@ -197,6 +197,7 @@ a:hover { color: #292929; }
   border-radius: 40px;
   border: 1px solid white;
   box-shadow: 0px 0px 5px white;
+  margin-right: 20px;
 }
 #jspsych-button-response-button-0 {
   position: absolute;
@@ -462,7 +463,7 @@ function exportToCsv(filename, rows) {
 			
     // Experiment Instructions
     var instructions = "<div id='instructions'><p>To get you started, we will give you some practice with crosses.<br/>Your job is to press the button that matches the color of the crosses.<br/>The color that goes with each button is showing below<br/><br/></div>"+
-    "<div><div class= 'inner_circle'><center><div style='padding-top: 20px; color: red; font-size: 36px; font-weight: bold;'>R</div></center></div>"+
+    "<div style=\"display: flex;\"><div class= 'inner_circle'><center><div style='padding-top: 20px; color: red; font-size: 36px; font-weight: bold;'>R</div></center></div>"+
     "<div class= 'inner_circle'><center><div style='padding-top: 20px; color: yellow; font-size: 36px; font-weight: bold;'>Y</div></center></div>"+
     "<div class= 'inner_circle'><center><div style='padding-top: 20px; color: rgb(0,255,0); font-size: 36px; font-weight: bold;'>G</div></center></div>"+
     "<div class= 'inner_circle'><center><div style='padding-top: 20px; color: blue; font-size: 36px; font-weight: bold;'>B</div></center></div></div>"+
