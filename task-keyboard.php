@@ -431,52 +431,6 @@ function exportToCsv(filename, rows) {
     var maxtrial_nums = 20;
     var all_test_trials = jsPsych.randomization.repeat(test_stimuli, maxtrial_nums); // we will cut the test short if 10 in a row are done correctly
 
-   /* var Correct = {
-	type: 'single-stim',
-	timeline: [{
-	    type: 'text',
-	    text: '<div class=\"correct\">correct</div>',	     
-	    on_finish: function(data){
-		jsPsych.data.addDataToLastTrial({is_data_element: false});
-		jsPsych.data.addDataToLastTrial({skipped:true});
-	    },
-	}],
-	conditional_function: function(){
-		var data = jsPsych.data.getLastTrialData();
-		if (data.correct == false){
-		  return false;
-		} else {
-		  return true;
-		}
-	}
-    }
-        
-    var Wrong = {
-	type: 'single-stim',
-	timeline: [{
-	    type: 'text',
-	    text: '<div class=\"wrong\">wrong</div>',
-	    data: { is_data_element: false},
-	}],
-	conditional_function: function(){
-		var data = jsPsych.data.getLastTrialData();
-		if (data.skipped == true){
-		  return false;
-		} else {
-		  return true;
-		}
-	}
-
-    }
-
-    // we would like to add WRONG + CORRECT pages dependent on the users input
-    var all_test_trials_with_correct = [];
-    for ( var i = 0; i < all_test_trials.length; i++ ) {
-	all_test_trials_with_correct.push(all_test_trials[i]);
-	all_test_trials_with_correct.push(Correct);
-	all_test_trials_with_correct.push(Wrong);
-    }
-			*/
   // this trial is for correct/incorrect feedback in example trials
   var feedback = { 
     is_html: true,
@@ -488,10 +442,10 @@ function exportToCsv(filename, rows) {
         return lasttrialdata.stimulus + "<p class='GRAY'>Time Ran Out</p>";
       }
       if(lasttrialdata.correct == true){
-        return lasttrialdata.stimulus + "<p class='GRAY'>Correct</p>";
+        return lasttrialdata.stimulus + "<img src='happy.svg'>";
       }
       else{
-        return lasttrialdata.stimulus + "<p class='GRAY'>Wrong</p>";
+        return lasttrialdata.stimulus + "<img src='sad.svg'>";
       }
     }
   }
