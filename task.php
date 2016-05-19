@@ -459,7 +459,7 @@ function exportToCsv(filename, rows) {
 	test_trials.push(test_trial_feedback);
     }
     // Introduction
-    var start_instructions = "<div id='inst'><p><br/>In this task, you will press the button that matches the color of a word, while ignoring what the word says.<br/>The possible color responses are:<p>Red<span style='margin-right: 30px;'></span>Yellow<span style='margin-right: 30px;'></span>Green<span style='margin-right: 30px;'></span>Blue<br/>Press here when you are ready to begin.</p>";
+    var start_instructions = "<div id='inst'><p><img src='smilies.svg'><br/>In this task, you will press the button that matches the color of a word, while ignoring what the word says.<br/>The possible color responses are:<p>Red<span style='margin-right: 30px;'></span>Yellow<span style='margin-right: 30px;'></span>Green<span style='margin-right: 30px;'></span>Blue<br/>Press here when you are ready to begin.</p>";
 			
     // Experiment Instructions
     var instructions = "<div id='instructions'><p>To get you started, we will give you some practice with crosses.<br/>Your job is to press the button that matches the color of the crosses.<br/>The color that goes with each button is showing below<br/><br/></div>"+
