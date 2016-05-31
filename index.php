@@ -9,7 +9,8 @@
     // user is not logged in
     return;
   } else {
-    $admin = true;
+    if ($user_name == "admin")
+      $admin = true;
     echo('<script type="text/javascript"> user_name = "'.$user_name.'"; </script>'."\n");
     echo('<script type="text/javascript"> admin = '.($admin?"true":"false").'; </script>'."\n");
   }
@@ -222,7 +223,9 @@
             <div class="modal-body">
               <div>
                 <button id="open-stroop1-button" type="button" class="btn btn-success" data-dismiss="modal"><i class="fa fa-save"></i> Start Stroop-Task (touch)</button> &nbsp;
-                <button id="open-stroop2-button" type="button" class="btn btn-success" data-dismiss="modal"><i class="fa fa-save"></i> Start Stroop-Task (keyboard)</button> &nbsp;
+<?php if ($admin): ?>
+    <button id="open-stroop2-button" type="button" class="btn btn-success" data-dismiss="modal"><i class="fa fa-save"></i> Start Stroop-Task (keyboard)</button> &nbsp;
+<?php endif; ?>
                 <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Back</button>&nbsp;
               </div>
             </div><!-- /.modal-body -->
