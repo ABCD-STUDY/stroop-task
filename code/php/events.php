@@ -52,6 +52,11 @@
   // this event will be saved at this location
   $events_file = $_SERVER['DOCUMENT_ROOT']."/applications/stroop/data/" . $site . "/lmt_".$subjid."_".$sessionid.".json";
 
+  $dd = $_SERVER['DOCUMENT_ROOT']."/applications/stroop/data/" . $site;
+  if (!file_exists($dd)) {
+     mkdir($dd, 0777);
+  }
+
   if (file_exists($events_file)) {
      echo(json_encode ( array( "message" => "Error: this session already exists, overwrite session is not possible" ) ) );
      return;
