@@ -463,10 +463,10 @@ function exportToCsv(filename, rows) {
 			
     // Experiment Instructions
     var instructions = "<div id='instructions'><p>To get you started, we will give you some practice with crosses.<br/>Your job is to press the button that matches the color of the crosses.<br/>The color that goes with each button is showing below<br/><br/></div>"+
-    "<div style=\"display: flex;\"><div class= 'inner_circle'><center><div style='padding-top: 20px; color: red; font-size: 36px; font-weight: bold;'>R</div></center></div>"+
-    "<div class= 'inner_circle'><center><div style='padding-top: 20px; color: yellow; font-size: 36px; font-weight: bold;'>Y</div></center></div>"+
-    "<div class= 'inner_circle'><center><div style='padding-top: 20px; color: rgb(0,255,0); font-size: 36px; font-weight: bold;'>G</div></center></div>"+
-    "<div class= 'inner_circle'><center><div style='padding-top: 20px; color: blue; font-size: 36px; font-weight: bold;'>B</div></center></div></div>"+
+    "<div style=\"display: flex;\"><div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterR.png'></div></center></div>"+
+    "<div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterY.png'></div></center></div>"+
+    "<div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterG.png'></div></center></div>"+
+    "<div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterB.png'></div></center></div></div>"+
     "<div id='instructions'><br/><br/><p>Press here to Begin</p></div>";
 
     var startreal = "<div id='instructions'><p><br/>You are finished with the practice trials.<br/><br/>Now you will begin the task.<br/><br/>Remember, you should base your response of the color of the ink in which the word is printed, while ignoring the meaning of the printed word.<br/><br/>From left to right, the responses are Red, Yellow, Green, Blue.<br/><br/>Press here when you are ready to begin.</p></div>";
@@ -475,10 +475,10 @@ function exportToCsv(filename, rows) {
     var numColorTested = 0;
     var test_block = {
     	type: 'button-response',
-	choices: ['<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">R</div></div></center>',
-'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">Y</div></div></center>',
-'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">G</div></div></center>',
-'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">B</div></div></center>'],
+	choices: ['<center><div class="inner_circle"><div style="padding-top: 20px;"><img src="letterR.png"></div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 20px;"><img src="letterY.png"></div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 20px;"><img src="letterG.png"></div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 20px;"><img src="letterB.png"></div></div></center>'],
 	timing_post_trial: test_trials,
 	timeline: test_trials,
 	on_finish: function(data) {
@@ -555,10 +555,10 @@ function exportToCsv(filename, rows) {
     
     var block1 = {
     	type: 'button-response',
-  choices: ['<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">R</div></div></center>',
-'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">Y</div></div></center>',
-'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">G</div></div></center>',
-'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">B</div></div></center>'],
+  choices: ['<center><div class="inner_circle"><div style="padding-top: 20px;"><img src="letterR.png"></div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 20px;"><img src="letterY.png"></div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 20px;"><img src="letterG.png"></div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 20px;"><img src="letterB.png"></div></div></center>'],
 	timing_post_trial: post_trial_gap,
 	timeline: all_uneq_trials,
 	on_finish: function(data) {
@@ -581,10 +581,10 @@ function exportToCsv(filename, rows) {
 
     var block2 = {
     	type: 'button-response',
-  choices: ['<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">R</div></div></center>',
-'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">Y</div></div></center>',
-'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">G</div></div></center>',
-'<center><div class="inner_circle"><div style="padding-top: 15px; font-size: 36px; font-weight: bold;">B</div></div></center>'],
+  choices: ['<center><div class="inner_circle"><div style="padding-top: 20px;"><img src="letterR.png"></div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 20px;"><img src="letterY.png"></div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 20px;"><img src="letterG.png"></div></div></center>',
+'<center><div class="inner_circle"><div style="padding-top: 20px;"><img src="letterB.png"></div></div></center>'],
 	timing_post_trial: post_trial_gap,
 	timeline: all_equal_trials,
 	on_finish: function(data) {
@@ -614,7 +614,12 @@ function exportToCsv(filename, rows) {
    			return createStats( jsPsych.data.getData() );
 		   }
     });
-
+    //preload images for buttons
+    var little_letters=["letterB.png","letterG.png","letterY.png","letterR.png"];
+    //preload function on start calls the actual init function after loading. 
+    jsPsych.pluginAPI.preloadImages(little_letters, function(){ startExperiment(); });
+    
+  function startExperiment(){
     jsPsych.init({
        timeline: timeline,
        on_finish: function(data) {
@@ -633,6 +638,7 @@ function exportToCsv(filename, rows) {
 	      
        }
     });
+  }
     
 </script>
 </html>
