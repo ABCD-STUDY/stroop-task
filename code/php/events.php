@@ -31,6 +31,7 @@
   // Both the subject id and the visit (session) are used to make the assessment unique
    $subjid = "";
    $sessionid = "";
+   $run = "";
    $active_substances = array();
    if ( isset($_SESSION['ABCD']) && isset($_SESSION['ABCD']['stroop']) ) {
       if (isset($_SESSION['ABCD']['stroop']['subjid'])) {  
@@ -38,6 +39,9 @@
       }
       if (isset($_SESSION['ABCD']['stroop']['sessionid'])) {
          $sessionid  = $_SESSION['ABCD']['stroop']['sessionid'];
+      }      
+      if (isset($_SESSION['ABCD']['stroop']['run'])) {
+         $run  = $_SESSION['ABCD']['stroop']['run'];
       }      
    }
    if ($subjid == "") {
@@ -48,9 +52,25 @@
      echo(json_encode ( array( "message" => "Error: no session specified" ) ) );
      return;
    }
+   if ($run == "") {
+     echo(json_encode ( array( "message" => "Error: no run specified" ) ) );
+     return;
+   }
+  $action = "save";
+  if (isset($_POST['action'])) {
+    $action = $_POST['action'];
+  }
 
   // this event will be saved at this location
-  $events_file = $_SERVER['DOCUMENT_ROOT']."/applications/stroop/data/" . $site . "/lmt_".$subjid."_".$sessionid.".json";
+  $events_file = $_SERVER['DOCUMENT_ROOT']."/applications/stroop/data/" . $site . "/str_".$subjid."_".$sessionid."_".$run.".json";
+
+  if ($action == "test") {
+     // test if the current file exists already
+     if (file_exists($events_file)) {
+       echo(json_encode ( array( "message" => "Error: this session already exists, overwrite session is not possible", "ok" => "0" ) ) );
+       return;
+     }
+  }
 
   $dd = $_SERVER['DOCUMENT_ROOT']."/applications/stroop/data/" . $site;
   if (!file_exists($dd)) {
@@ -62,13 +82,22 @@
      return;
   }
   
-  $ar = array( "data" => [], "serverDate" => date("Y/m/d"), "serverTime" => date("h:i:sa"), "site" => $site, "subjectid" => $subjid, "session" => $sessionid );
+  $ar = array( "data" => [],
+      "str_serverdate" => date("Y/m/d"),
+      "str_servertime" => date("h:i:sa"),
+      "str_site" => $site,
+      "str_subject_id" => $subjid,
+      "str_event_name" => $sessionid,    // have this appear on the instrument as well
+      "str_run" => $run,
+      "subject_id" => $subjid,
+      "redcap_event_name" => $sessionid);
   if (isset($_POST['data'])) {
      $ar['data'] = json_decode($_POST['data'], true);
   }
   if (isset($_POST['date'])) {
-     $ar['assessmentDate'] = $_POST['date'];
+     $ar['assessmentdate'] = $_POST['date'];
   }
   file_put_contents($events_file, json_encode( $ar, JSON_PRETTY_PRINT ));
+  echo(json_encode ( array( "message" => "Saved session", "ok" => "1" ) ) );
 
 ?>

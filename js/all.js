@@ -27,12 +27,17 @@ function checkConnectionStatus() {
 
 
 function storeSubjectAndName() {
-    var subject = jQuery('#session-participant').val().replace(/\s/g, '');
-    var session = jQuery('#session-name').val().replace(/\s/g, '');
+    var subject = jQuery('#session-participant').val();
+    var session = jQuery('#session-name').val();
+    var run     = jQuery('#session-run').val();
+
+    if (subject === null)
+	return; // don't store anything
     jQuery('#session-participant').val(subject);
     jQuery('#session-name').val(session);
     jQuery('.subject-id').text("Subject ID: " + subject);
     jQuery('.session-id').text("Session: " + session);
+    jQuery('.run-id').text("Run: " + run);
     
     if (subject.length > 0 && session.length > 0) {
 	jQuery('#session-active').text("Active Session");
@@ -47,11 +52,12 @@ function storeSubjectAndName() {
     var data = {
 	"subjid": subject,
 	"sessionid": session,
+	"run": run,
 	"task": "stroop"
     };
     
     jQuery.get('../../code/php/session.php', data, function() {
-	console.log('stored subject and session and act_subst: ' +  subject + ", " + session );
+	console.log('stored subject, session and run: ' +  subject + ", " + session + ", " + run );
     });
 }
 
@@ -60,6 +66,7 @@ function closeSession() {
     // just set to empty strings and submit
     jQuery('#session-participant').val("");
     jQuery('#session-name').val("");
+    jQuery('#session-run').val("01");
     storeSubjectAndName();
 }
 
@@ -107,12 +114,42 @@ function exportToCsv(filename, rows) {
     }
 }
 
+// get valid session names
+function getSessionNamesFromREDCap() {
+    jQuery.getJSON('/code/php/getRCEvents.php', function(data) {
+	for (var i = 0; i < data.length; i++) {
+	    val = "";
+	    if (i == 1) {
+		val = "selected=\"selected\"";
+	    }
+	    jQuery('#session-name').append("<option " + val + " value=\"" + data[i].unique_event_name + "\">" + data[i].event_name + "</option>");
+	}
+	getParticipantNamesFromREDCap();
+	//storeSubjectAndName();
+    });
+}
+
+function getParticipantNamesFromREDCap() {
+    jQuery.getJSON('/code/php/getParticipantNamesFromREDCap.php', function(data) {
+	for (var i = 0; i < data.length; i++) {
+	    jQuery('#session-participant').append("<option value=\"" + data[i] + "\">" + data[i] + "</option>");
+	}
+	storeSubjectAndName();
+    });
+}
+
+
+
+
 jQuery(document).ready(function() {
 
+    getSessionNamesFromREDCap();
+    
     // add the session variables to the interface
     jQuery('#user_name').text("User: " + user_name);
     jQuery('#session-participant').val(subjid);
     jQuery('#session-name').val(session);
+    jQuery('#session-run').val(run);
     
     storeSubjectAndName();
     
@@ -125,19 +162,32 @@ jQuery(document).ready(function() {
     jQuery('#session-name').change(function() {
 	storeSubjectAndName();
     });
+    jQuery('#session-run').change(function() {
+	storeSubjectAndName();
+    });
     
     jQuery('#open-save-session').click(function() {
 	jQuery('#session-participant-again').val(""); // clear the value from before
     });
 
     jQuery('#open-stroop1-button').click(function() {
-        // mark this one as started
-	jQuery.getJSON('code/php/events.php?action=mark&status=started&user_name='+user_name, function(data) {
-	    console.log(data);
-	});
+        jQuery.post('code/php/events.php', { "action": "test" }, function(data) {
+	    // check if the current data file can be saved - does not exist already on the server and would be overwritten
+	    console.log('would be overwritten');
+	    if (data.ok == 0) {
+		alert('Error: This data file exists already on the server. It cannot be overwritten. Please select a different run for this subject.');
+		return;
+	    }
+	    
+            // mark this one as started
+	    jQuery.getJSON('code/php/events.php?action=mark&status=started&user_name='+user_name, function(data) {
+		console.log(data);
+	    });
+	    
+	    // redirect to the task.php page
+	    window.location = '/applications/stroop/task.php';
+	}, 'json');
 
-	// redirect to the task.php page
-	window.location = '/applications/stroop/task.php';
     });
     
     jQuery('#open-stroop2-button').click(function() {
@@ -153,8 +203,8 @@ jQuery(document).ready(function() {
     // 
     jQuery('#save-session-button').click(function() {
 	// test if subjid matches
-	var nameNow = jQuery('#session-participant-again').val().replace(/\s/g, '');
-	var nameBefore = jQuery('#session-participant').val().replace(/\s/g, '');
+	var nameNow = jQuery('#session-participant-again').val();
+	var nameBefore = jQuery('#session-participant').val();
 	if ( nameNow != nameBefore ) {
 	    alert("Error: Your subject ID is not correct, please check the subject ID for correctness again.");
 	    return false;

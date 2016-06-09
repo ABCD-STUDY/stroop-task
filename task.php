@@ -19,6 +19,7 @@
 
   $subjid = "";
   $sessionid = "";
+  $run = ""; 
   if( isset($_SESSION['ABCD']) && isset($_SESSION['ABCD']['stroop']) ) {
      if (isset($_SESSION['ABCD']['stroop']['subjid'])) {
         $subjid  = $_SESSION['ABCD']['stroop']['subjid'];
@@ -26,9 +27,13 @@
      if (isset($_SESSION['ABCD']['stroop']['sessionid'])) {
         $sessionid  = $_SESSION['ABCD']['stroop']['sessionid'];
      }
+     if (isset($_SESSION['ABCD']['stroop']['run'])) {
+        $run  = $_SESSION['ABCD']['stroop']['run'];
+     }
   }
   echo('<script type="text/javascript"> SubjectID = "'.$subjid.'"; </script>'."\n");
   echo('<script type="text/javascript"> Session = "'.$sessionid.'"; </script>'."\n");
+  echo('<script type="text/javascript"> Run = "'.$run.'"; </script>'."\n");
 
    $permissions = list_permissions_for_user( $user_name );
 
@@ -57,14 +62,14 @@
     <script src="js/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
     <script src="/js/jquery.ui.touch-punch.min.js"></script>
-    <script src='js/moment.min.js'></script>
+    <script src="js/moment.min.js"></script>
    
     <!-- Load the jspsych library and plugins -->
     <script src="js/jspsych/jspsych.js"></script>
     <script src="js/jspsych/plugins/jspsych-text.js"></script>
     <script src="js/jspsych/plugins/jspsych-single-stim.js"></script>
     <script src="js/jspsych/plugins/jspsych-button-response.js"></script>
-    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+    <script src="js/plotly-latest.min.js"></script>
     <!-- Load the stylesheet -->
     <!-- <link href="experiment.css" type="text/css" rel="stylesheet"></link> -->
     <link href="js/jspsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
@@ -279,7 +284,6 @@ function createStats( data ) {
     space = (maxneut-minneut) / (histNeutg.length-1);			
     var sumneut = histNeutg.reduce(function(a, b) { return a+(b*space); });
     histNeutg = histNeutg.map(function(a) { return a/sumneut; });
-    
     
     // we also like to have the mean and variance for both
     var meancon = con.reduce( function (a, b) { return a+b; })/con.length;
@@ -605,7 +609,6 @@ function exportToCsv(filename, rows) {
 
     timeline.push( block2 );
 
-
     //separating text barrier slide at end of code
     timeline.push( { type: 'text', cont_key: 'mouse', text: "<p>Thank you for participating!</p>" } );
     timeline.push( { type: 'text',
@@ -616,24 +619,25 @@ function exportToCsv(filename, rows) {
     });
 
     jsPsych.init({
-       timeline: timeline,
-       on_finish: function(data) {
-	      jQuery.post('code/php/events.php',
-		{ "data": JSON.stringify(jsPsych.data.getData()), "date": moment().format() }, function(data) {
-		  if (typeof data.ok == 'undefined' || data.ok == 0) {
-		   //  alert('Error: ' + data.message);
-		  }
-                  // export as csv for download on client
-                  exportToCsv("Stroop-Task_" + Site + "_" + SubjectID + "_" + Session + "_" + moment().format() + ".csv",
-		  			     jsPsych.data.getData());
-		}).error(function() {
-                  exportToCsv("Stroop-Task_" + Site + "_" + SubjectID + "_" + Session + "_" + moment().format() + ".csv",
-		  			     jsPsych.data.getData());			
-		});
-	      
-       }
+	timeline: timeline,
+	on_finish: function(data) {
+	    
+	    jQuery.post('code/php/events.php',
+			{ "data": JSON.stringify(jsPsych.data.getData()), "date": moment().format() },
+			function(data) {
+			    if (typeof data.ok == 'undefined' || data.ok == 0) {
+				//  alert('Error: ' + data.message);
+			    }
+			    // export as csv for download on client
+			    exportToCsv("Stroop-Task_" + Site + "_" + SubjectID + "_" + Session + "_" + moment().format() + ".csv",
+		  			jsPsych.data.getData());
+			}).error(function() {
+			    exportToCsv("Stroop-Task_" + Site + "_" + SubjectID + "_" + Session + "_" + moment().format() + ".csv",
+		  			jsPsych.data.getData());			
+			});
+	}
     });
-    
+
 </script>
 </html>
     
