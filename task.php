@@ -444,10 +444,10 @@ function exportToCsv(filename, rows) {
 			  return lasttrialdata.stimulus + "<p class='GRAY'>Time Ran Out</p>";
 		  }
 		  if(lasttrialdata.correct == true){
-			  return lasttrialdata.stimulus + "<img src='happy.svg'>";
+			  return lasttrialdata.stimulus + "<center><img src='happy.svg'></center>";
 		  }
 		  else{
-			  return lasttrialdata.stimulus + "<img src='sad.svg'>";
+			  return lasttrialdata.stimulus + "<center><img src='sad.svg'></center>";
 		  }
     }
   }
@@ -466,7 +466,7 @@ function exportToCsv(filename, rows) {
     var start_instructions = "<div id='inst'><p><br/>In this task, you will press the button that matches the color of a word, while ignoring what the word says.<br/>The possible color responses are:<p>Red<span style='margin-right: 30px;'></span>Yellow<span style='margin-right: 30px;'></span>Green<span style='margin-right: 30px;'></span>Blue<br/>Press here when you are ready to begin.</p>";
 			
     // Experiment Instructions
-    var instructions = "<div id='instructions'><p>To get you started, we will give you some practice with crosses.<br/>Your job is to press the button that matches the color of the crosses.<br/>The color that goes with each button is showing below<br/><br/></div>"+
+    var instructions = "<div id='instructions'><p>To get you started, we will give you some practice with crosses.<br/>Your job is to press the button that matches the color of the crosses.<br/>The color that goes with each button is shown below<br/><br/></div>"+
     "<div style=\"display: flex;\"><div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterR.png'></div></center></div>"+
     "<div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterY.png'></div></center></div>"+
     "<div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterG.png'></div></center></div>"+
