@@ -6,7 +6,7 @@
   $user_name = check_logged(); /// function checks if user is logged in
 
   if (!$user_name || $user_name == "") {
-     echo (json_encode ( array( "message" => "no user name" ) ) );
+     echo (json_encode ( array( "message" => "no user name", "ok" => "0" ) ) );
      return; // nothing
   }
 
@@ -24,7 +24,7 @@
      }
   }
   if ($site == "") {
-     echo (json_encode ( array( "message" => "Error: no site assigned to this user" ) ) );
+     echo (json_encode ( array( "message" => "Error: no site assigned to this user", "ok" => "0" ) ) );
      return;
   }
 
@@ -45,20 +45,21 @@
       }      
    }
    if ($subjid == "") {
-     echo(json_encode ( array( "message" => "Error: no subject id assigned" ) ) );
+     echo(json_encode ( array( "message" => "Error: no subject id assigned", "ok" => "0" ) ) );
      return;
    }
    if ($sessionid == "") {
-     echo(json_encode ( array( "message" => "Error: no session specified" ) ) );
+     echo(json_encode ( array( "message" => "Error: no session specified", "ok" => "0" ) ) );
      return;
    }
    if ($run == "") {
-     echo(json_encode ( array( "message" => "Error: no run specified" ) ) );
+     echo(json_encode ( array( "message" => "Error: no run specified", "ok" => "0" ) ) );
      return;
    }
+
   $action = "save";
   if (isset($_POST['action'])) {
-    $action = $_POST['action'];
+     $action = $_POST['action'];
   }
 
   // this event will be saved at this location
@@ -68,8 +69,13 @@
      // test if the current file exists already
      if (file_exists($events_file)) {
        echo(json_encode ( array( "message" => "Error: this session already exists, overwrite session is not possible", "ok" => "0" ) ) );
-       return;
      }
+     echo(json_encode ( array( "message" => "file does not exist", "ok" => "1" ) ) );
+     return;
+  } else if( $action == "mark" ) {
+    // for now ignore this
+
+    return;
   }
 
   $dd = $_SERVER['DOCUMENT_ROOT']."/applications/stroop/data/" . $site;
@@ -78,24 +84,29 @@
   }
 
   if (file_exists($events_file)) {
-     echo(json_encode ( array( "message" => "Error: this session already exists, overwrite session is not possible" ) ) );
+     echo(json_encode ( array( "message" => "Error: this session already exists, overwrite session is not possible", "ok" => "0" ) ) );
      return;
   }
   
   $ar = array( "data" => [],
-      "str_serverdate" => date("Y/m/d"),
-      "str_servertime" => date("h:i:sa"),
+      "str_server_date" => date("Y/m/d"),
+      "str_server_time" => date("h:i:sa"),
       "str_site" => $site,
       "str_subject_id" => $subjid,
       "str_event_name" => $sessionid,    // have this appear on the instrument as well
       "str_run" => $run,
-      "subject_id" => $subjid,
+      "record_id" => $subjid,
       "redcap_event_name" => $sessionid);
+  if (isset($_POST['toplevel'])) {
+     foreach($_POST['toplevel'] as $key => $value) {
+        $ar[$key] = $value;
+     }
+  }
   if (isset($_POST['data'])) {
      $ar['data'] = json_decode($_POST['data'], true);
   }
   if (isset($_POST['date'])) {
-     $ar['assessmentdate'] = $_POST['date'];
+     $ar['str_assessment_date'] = $_POST['date'];
   }
   file_put_contents($events_file, json_encode( $ar, JSON_PRETTY_PRINT ));
   echo(json_encode ( array( "message" => "Saved session", "ok" => "1" ) ) );
