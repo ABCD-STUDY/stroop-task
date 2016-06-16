@@ -629,16 +629,14 @@ function exportToCsv(filename, rows) {
 			   
             ud = makeUnique( jsPsych.data.getData(), 'str_' );
 	    
-	    jQuery.post('code/php/events.php',
-			{ "data": JSON.stringify(ud), "date": moment().format() },
-			function(data) {
+	    jQuery.post('code/php/events.php', { "data": JSON.stringify(ud), "date": moment().format() }, function(data) {
 			    if (typeof data.ok == 'undefined' || data.ok == 0) {
 				alert('Error: ' + data.message);
 			    }
 			    // export as csv for download on client
 			    exportToCsv("Stroop-Task_" + Site + "_" + SubjectID + "_" + Session + "_" + moment().format() + ".csv",
 		  			jsPsych.data.getData());
-			}).error(function() {
+			}, 'json').error(function() {
 			    exportToCsv("Stroop-Task_" + Site + "_" + SubjectID + "_" + Session + "_" + moment().format() + ".csv",
 		  			jsPsych.data.getData());			
 			});
