@@ -626,10 +626,13 @@ function exportToCsv(filename, rows) {
     jsPsych.init({
 	timeline: timeline,
         on_finish: function(data) {
+
+	    var d = {};
+	    d.str_user = user_name;
 			   
             ud = makeUnique( jsPsych.data.getData(), 'str_' );
 	    
-	    jQuery.post('code/php/events.php', { "data": JSON.stringify(ud), "date": moment().format() }, function(data) {
+	    jQuery.post('code/php/events.php', { "data": JSON.stringify(ud), "date": moment().format(), "toplevel": d }, function(data) {
 			    if (typeof data.ok == 'undefined' || data.ok == 0) {
 				alert('Error: ' + data.message);
 			    }
