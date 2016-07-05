@@ -95,7 +95,7 @@
       "str_subject_id" => $subjid,
       "str_event_name" => $sessionid,    // have this appear on the instrument as well
       "str_run" => $run,
-      "record_id" => $subjid,
+      "id_redcap" => $subjid,
       "redcap_event_name" => $sessionid);
   if (isset($_POST['toplevel'])) {
      foreach($_POST['toplevel'] as $key => $value) {
