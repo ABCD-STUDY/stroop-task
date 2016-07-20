@@ -463,17 +463,17 @@ function exportToCsv(filename, rows) {
 	test_trials.push(test_trial_feedback);
     }
     // Introduction
-    var start_instructions = "<div id='inst'><p><br/>In this task, you will press the button that matches the color of a word, while ignoring what the word says.<br/>The possible color responses are:<p>Red<span style='margin-right: 30px;'></span>Yellow<span style='margin-right: 30px;'></span>Green<span style='margin-right: 30px;'></span>Blue<br/>Press here when you are ready to begin.</p>";
+    var start_instructions = "<div id='inst'><p><br/>In this task, you will press the button that matches the color of a word, while ignoring what the word says.<br/><br/>The possible color responses are:<p>Red<span style='margin-right: 30px;'></span>Yellow<span style='margin-right: 30px;'></span>Green<span style='margin-right: 30px;'></span>Blue<br/><br/>Use your two index fingers when responding.</p>";
 			
     // Experiment Instructions
-    var instructions = "<div id='instructions'><p>To get you started, we will give you some practice with crosses.<br/>Your job is to press the button that matches the color of the crosses.<br/>The color that goes with each button is shown below<br/><br/></div>"+
+    var instructions = "<div id='instructions'><p>To get you started, we will let you practice. <br/><br/>Your job is to press the button that matches the color of the string of xxxxx's.<br/><br/>The color that goes with each button is shown below<br/><br/>Use your two index fingers when responding.<br/><br/></div>"+
     "<div style=\"display: flex;\"><div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterR.png'></div></center></div>"+
     "<div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterY.png'></div></center></div>"+
     "<div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterG.png'></div></center></div>"+
     "<div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterB.png'></div></center></div></div>"+
-    "<div id='instructions'><br/><br/><p>Press here to Begin</p></div>";
+    "<div id='instructions'><br/><br/></div>";
 
-    var startreal = "<div id='instructions'><p><br/>You are finished with the practice trials.<br/><br/>Now you will begin the task.<br/><br/>Remember, you should base your response of the color of the ink in which the word is printed, while ignoring the meaning of the printed word.<br/><br/>From left to right, the responses are Red, Yellow, Green, Blue.<br/><br/>Press here when you are ready to begin.</p></div>";
+    var startreal = "<div id='instructions'><p><br/>You will now start the real task.<br/><br/>Your job is to press the the button that matches the color of the word while ignoring what the word says. <br/><br/>The color that goes with each button is shown below. <br/><br/>Use your two index fingers when responding.</p></div>";
 
     var memCorrectInARow = 0;
     var numColorTested = 0;
@@ -517,10 +517,26 @@ function exportToCsv(filename, rows) {
     jQuery('body').on('touchstart', function() { jQuery('#inst').click(); jQuery('#instructions').click(); });
 			
     var timeline = [];
-    timeline.push( { type: 'text', cont_key: 'mouse', text: start_instructions } );
-    timeline.push( { type: 'text', cont_key: 'mouse', text: instructions } );
+
+    timeline.push( { type: 'button-response',
+    button_html: '<button style="margin-left:350px" class="jspsych-btn jspsych-button-response-button">%choice%</button>',
+    choices: ['<div class="inner_circle"><div style="padding-top: 10px"><h2>next</h2></div></div>'],
+    is_html: true,
+    stimulus: start_instructions } );
+
+    timeline.push( { type: 'button-response',
+    button_html: '<button style="margin-left:350px" class="jspsych-btn jspsych-button-response-button">%choice%</button>',
+    choices: ['<div class="inner_circle"><div style="padding-top: 10px"><h2>next</h2></div></div>'],
+    is_html: true, 
+    stimulus: instructions } );
+
     timeline.push( test_block ); // add the test block (variable length, needs <N> correct answers)
-    timeline.push( { type: 'text', cont_key: 'mouse', text: startreal } );
+
+    timeline.push( { type: 'button-response',
+    button_html: '<button style="margin-left:350px" class="jspsych-btn jspsych-button-response-button">%choice%</button>',
+    choices: ['<div class="inner_circle"><div style="padding-top: 10px"><h2>next</h2></div></div>'],
+    is_html: true,
+    stimulus: startreal } );
 
     // we want to run two experiments, the first will show all incongruent stimuli once and all neutral stimuli 3 times
     var uneqlist = [
@@ -610,7 +626,11 @@ function exportToCsv(filename, rows) {
     timeline.push( block2 );
 
     //separating text barrier slide at end of code
-    timeline.push( { type: 'text', cont_key: 'mouse', text: "<p>Thank you for participating!</p>" } );
+    timeline.push( { type: 'button-response',
+    button_html: '<button style="margin-left:350px" class="jspsych-btn jspsych-button-response-button">%choice%</button>',
+    choices: ['<div class="inner_circle"><div style="padding-top: 10px"><h2>next</h2></div></div>'],
+    is_html: true, 
+    stimulus: "<p>Thank you for participating! Great job, let's try another task!</p>" } );
     timeline.push( { type: 'text',
 	  	     cont_key: 'mouse',
     		     text: function() {
