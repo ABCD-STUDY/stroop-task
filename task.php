@@ -627,14 +627,16 @@ function exportToCsv(filename, rows) {
 
     //separating text barrier slide at end of code
     timeline.push( { type: 'button-response',
-    button_html: '<button style="margin-left:350px" class="jspsych-btn jspsych-button-response-button">%choice%</button>',
-    choices: ['<div class="inner_circle"><div style="padding-top: 10px"><h2>next</h2></div></div>'],
-    is_html: true, 
-    stimulus: "<p>Thank you for participating! Great job, let's try another task!</p>" } );
-    timeline.push( { type: 'text',
-	  	     cont_key: 'mouse',
-    		     text: function() {
-   			return createStats( jsPsych.data.getData() );
+        button_html: '<button style="margin-left:350px" class="jspsych-btn jspsych-button-response-button">%choice%</button>',
+        choices: ['<div class="inner_circle"><div style="padding-top: 10px"><h2>next</h2></div></div>'],
+        is_html: true, 
+        stimulus: "<p>Thank you for participating! Great job, let's try another task!</p>" } );
+    timeline.push( { type: 'button-response',
+        button_html: '<button style="margin-left:350px" class="jspsych-btn jspsych-button-response-button">%choice%</button>',
+        choices: ['<div class="inner_circle"><div style="padding-top: 10px"><h2>next</h2></div></div>'],
+        is_html: true, 
+    		stimulus: function() {
+   			  return createStats( jsPsych.data.getData() );
 		   }
     });
     //preload images for buttons
@@ -663,6 +665,7 @@ function exportToCsv(filename, rows) {
 			    exportToCsv("Stroop-Task_" + Site + "_" + SubjectID + "_" + Session + "_" + moment().format() + ".csv",
 		  			jsPsych.data.getData());			
 			});
+      document.body.innerHTML = '<form action="https://abcd-report.ucsd.edu/"><button type="submit">Return to Homepage</button></form>';
 	}
     });
 
