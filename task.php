@@ -473,7 +473,11 @@ function exportToCsv(filename, rows) {
     "<div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterB.png'></div></center></div></div>"+
     "<div id='instructions'><br/><br/></div>";
 
-    var startreal = "<div id='instructions'><p><br/>You will now start the real task.<br/><br/>Your job is to press the the button that matches the color of the word while ignoring what the word says. <br/><br/>The color that goes with each button is shown below. <br/><br/>Use your two index fingers when responding.</p></div>";
+    var startreal = "<div id='instructions'><p><br/>You will now start the real task.<br/><br/>Your job is to press the button that matches the color of the word while ignoring what the word says. <br/><br/>The color that goes with each button is shown below.<br/><br/>"+
+    "<div style=\"display: flex;\"><div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterR.png'></div></center></div>"+
+    "<div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterY.png'></div></center></div>"+
+    "<div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterG.png'></div></center></div>"+
+    "<div class= 'inner_circle'><center><div style='padding-top: 20px'><img src='letterB.png'></div></center></div></div>"+"<br/><p><br/>Use your two index fingers when responding.</p></div>";
 
     var memCorrectInARow = 0;
     var numColorTested = 0;
@@ -630,7 +634,7 @@ function exportToCsv(filename, rows) {
         button_html: '<button style="margin-left:350px" class="jspsych-btn jspsych-button-response-button">%choice%</button>',
         choices: ['<div class="inner_circle"><div style="padding-top: 10px"><h2>next</h2></div></div>'],
         is_html: true, 
-        stimulus: "<p>Thank you for participating! Great job, let's try another task!</p>" } );
+        stimulus: "<p>Great job, let's try another task!</p>" } );
     timeline.push( { type: 'button-response',
         button_html: '<button style="margin-left:350px" class="jspsych-btn jspsych-button-response-button">%choice%</button>',
         choices: ['<div class="inner_circle"><div style="padding-top: 10px"><h2>next</h2></div></div>'],
@@ -665,7 +669,7 @@ function exportToCsv(filename, rows) {
 			    exportToCsv("Stroop-Task_" + Site + "_" + SubjectID + "_" + Session + "_" + moment().format() + ".csv",
 		  			jsPsych.data.getData());			
 			});
-      document.body.innerHTML = '<form action="https://abcd-report.ucsd.edu/"><button type="submit">Return to Homepage</button></form>';
+      document.body.innerHTML = '<center><form action="https://abcd-report.ucsd.edu/"><button style="height:200px;width:400px;font-size:48px;border-radius: 15px;" type="submit">Return to ABCD-Report Homepage</button></form></center>';
 	}
     });
 
