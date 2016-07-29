@@ -68,7 +68,8 @@
   if ($action == "test") {
      // test if the current file exists already
      if (file_exists($events_file)) {
-       echo(json_encode ( array( "message" => "Error: this session already exists, overwrite session is not possible", "ok" => "0" ) ) );
+       echo(json_encode ( array( "message" => "Error: this session \"".$events_file."\" already exists, overwrite session is not possible", "ok" => "0" ) ) );
+       return;
      }
      echo(json_encode ( array( "message" => "file does not exist", "ok" => "1" ) ) );
      return;
@@ -76,6 +77,8 @@
     // for now ignore this
 
     return;
+  } else {
+    // assumption is that action == "save" now
   }
 
   $dd = $_SERVER['DOCUMENT_ROOT']."/applications/stroop/data/" . $site;
